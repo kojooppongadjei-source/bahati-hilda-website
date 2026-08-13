@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Bahati Hilda Sabiti</title>
+<meta name="description" content="Book Bahati Hilda Sabiti for coaching, couple therapy or speaking engagements. Reach out by phone, email or WhatsApp.">
+<link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+
+<nav class="spine-index" aria-label="Section index">
+  <div class="spine-mark"><span>Vol. V — Reach Her</span></div>
+  <a href="#form" class="active"><span>Contact Form</span></a>
+  <a href="#direct"><span>Direct</span></a>
+</nav>
+
+<header class="topnav">
+  <div class="wrap">
+    <a href="/" class="brand">Bahati Hilda <em>Sabiti</em></a>
+    <div class="nav-links">
+      <a href="/index.html">Home</a>
+      <a href="/about.html">About</a>
+      <a href="/speaking.html">Speaking</a>
+      <a href="/shop.html">Shop</a>
+      <a href="/blog.html">Insights</a>
+      <a href="/contact.html" class="active">Contact</a>
+    </div>
+    <button class="cart-btn" id="cart-open-btn" aria-label="Open cart"><span class="cart-icon">&#128722;</span><span class="cart-count" id="cart-count-desktop">0</span></button>
+    <a href="/contact.html" class="nav-cta">Book Hilda</a>
+    <button class="mobile-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+  <div class="mobile-menu">
+    <a href="/index.html">Home</a>
+    <a href="/about.html">About</a>
+    <a href="/speaking.html">Speaking</a>
+    <a href="/shop.html">Shop</a>
+    <a href="/blog.html">Insights</a>
+    <a href="/contact.html">Contact</a>
+    <a href="/contact.html" class="btn btn-primary nav-cta">Book Hilda</a>
+  </div>
+</header>
+
+<div class="cart-overlay" id="cart-overlay"></div>
+<div class="cart-drawer" id="cart-drawer">
+  <div class="cart-drawer-head">
+    <h3>Your Cart</h3>
+    <button class="cart-close" id="cart-close-btn" aria-label="Close cart">&times;</button>
+  </div>
+  <div class="cart-drawer-body" id="cart-drawer-body">
+    <div class="cart-empty">Your cart is empty. Browse the bookstore to add something.</div>
+  </div>
+  <div class="cart-drawer-foot">
+    <div class="cart-subtotal"><span>Subtotal</span><span id="cart-subtotal-val">UGX 0</span></div>
+    <button class="btn btn-primary btn-block" id="checkout-toggle-btn">Checkout</button>
+    <div class="checkout-fields" id="checkout-fields">
+      <input type="text" id="checkout-name" placeholder="Full Name" required>
+      <input type="email" id="checkout-email" placeholder="Email Address" required>
+      <input type="tel" id="checkout-phone" placeholder="Phone Number (for Mobile Money)" required>
+      <button class="btn btn-gold btn-block" id="pay-btn">Pay with Flutterwave</button>
+    </div>
+    <div class="cart-msg" id="cart-msg"></div>
+  </div>
+</div>
+
+<section class="page-header">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="/index.html">Home</a> / Contact</div>
+    <div class="eyebrow on-dark">Let's Connect</div>
+    <h1>Tell me what you need —<br>I'll take it from there.</h1>
+    <p class="lede">Whether it's coaching, couple therapy, a speaking engagement or an Academy enquiry, share a few details and Hilda's team will be in touch within 24–48 hours.</p>
+  </div>
+</section>
+
+<section id="form">
+  <div class="wrap">
+    <div class="split-grid-wide">
+
+      <form class="reveal" onsubmit="event.preventDefault(); document.getElementById('form-success').style.display='block'; this.style.display='none';">
+        <div class="form-row-2">
+          <div class="form-field">
+            <label for="fname">First Name</label>
+            <input type="text" id="fname" required>
+          </div>
+          <div class="form-field">
+            <label for="lname">Last Name</label>
+            <input type="text" id="lname" required>
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-field">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" required>
+          </div>
+          <div class="form-field">
+            <label for="phone">Phone / WhatsApp</label>
+            <input type="tel" id="phone" required>
+          </div>
+        </div>
+        <div class="form-field">
+          <label for="reason">How Can I Help?</label>
+          <select id="reason" required>
+            <option value="">Select one</option>
+            <option>Life or Relationship Coaching</option>
+            <option>Couple Therapy</option>
+            <option>Speaking Engagement</option>
+            <option>Accelerated Mentorship Academy</option>
+            <option>Media / Press</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label for="message">Your Message</label>
+          <textarea id="message" rows="5" required placeholder="Tell me a bit about what you're looking for..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Send Message</button>
+        <div id="form-success" style="display:none;margin-top:18px;padding:16px 18px;background:var(--white-dim);border-left:3px solid var(--wine);font-size:14.5px;">
+          Thank you — your message has been noted. Hilda's team will be in touch within 24–48 hours.
+        </div>
+      </form>
+
+      <div class="reveal">
+        <div class="pillar-card" style="border-top-color:var(--gold);">
+          <div class="eyebrow">Direct Contact</div>
+          <h3 style="margin-top:14px;">Reach Hilda Directly</h3>
+          <div class="divider-gold"></div>
+          <p style="margin-top:6px;"><strong>Phone / WhatsApp</strong><br><a href="tel:+256757117117">+256 (0) 757 117 117</a></p>
+          <p style="margin-top:16px;"><strong>Email</strong><br><a href="mailto:bahatihilda@gmail.com">bahatihilda@gmail.com</a></p>
+          <a href="https://wa.me/256757117117" class="btn btn-gold" style="margin-top:24px;">Message on WhatsApp</a>
+        </div>
+
+        <div class="pillar-card" style="margin-top:32px;">
+          <div class="eyebrow">Speaking Enquiries</div>
+          <h3 style="margin-top:14px;">Booking a Session for Your Event?</h3>
+          <p style="margin-top:10px;">Please include your event date, expected audience size and preferred topic so Hilda's team can confirm availability quickly.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section-dark" id="direct">
+  <div class="wrap pullquote reveal">
+    <blockquote>"I don't want to miss the moment for five minutes and regret it for years. Reach out — let's find your clarity together."</blockquote>
+    <cite>— Bahati Hilda Sabiti</cite>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Bahati Hilda <em>Sabiti</em></div>
+        <p class="footer-tag">Certified Relationship, Marriage &amp; Leadership Expert — helping you speak with power, build your brand and love with purpose.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <a href="/about.html">About</a>
+        <a href="/speaking.html">Speaking</a>
+        <a href="/shop.html">Shop</a>
+        <a href="/blog.html">Insights</a>
+        <a href="/contact.html">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Get in Touch</h4>
+        <a href="tel:+256757117117">+256 (0) 757 117 117</a>
+        <a href="mailto:bahatihilda@gmail.com">bahatihilda@gmail.com</a>
+        <a href="https://wa.me/256757117117">WhatsApp Hilda</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Bahati Hilda Sabiti. All Rights Reserved.</span>
+      <div class="footer-social">
+        <a href="#" aria-label="Instagram">IG</a>
+        <a href="#" aria-label="Facebook">FB</a>
+        <a href="#" aria-label="YouTube">YT</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+<script src="https://checkout.flutterwave.com/v3.js"></script>
+<script src="/assets/js/shop.js"></script>
+</body>
+</html>
