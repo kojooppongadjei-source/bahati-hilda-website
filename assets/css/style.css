@@ -492,7 +492,7 @@ footer{background:var(--ink);color:rgba(251,247,241,0.7);padding:70px 0 30px;}
   background:var(--white);border:1px solid var(--border);
   display:flex;flex-direction:column;overflow:hidden;
 }
-.product-card img{width:100%;aspect-ratio:4/5;object-fit:cover;}
+.product-card img{width:100%;aspect-ratio:4/5;object-fit:contain;background:var(--ink);}
 .product-card-body{padding:22px;display:flex;flex-direction:column;flex:1;}
 .product-card-body h3{font-size:19px;margin-bottom:8px;}
 .product-card-body p{font-size:14px;color:var(--ink-soft);line-height:1.6;flex:1;}
