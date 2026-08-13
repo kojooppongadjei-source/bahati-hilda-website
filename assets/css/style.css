@@ -224,8 +224,9 @@ section{padding:90px 0;}
 }
 .hero-grid{
   display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,0.95fr);
-  align-items:center;gap:40px;
+  align-items:start;gap:40px;
   min-height:clamp(520px, 82vh, 760px);
+  padding-top:64px;
 }
 @media (max-width:980px){
   .hero-grid{grid-template-columns:1fr;min-height:auto;padding-top:20px;padding-bottom:40px;gap:44px;}
