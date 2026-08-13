@@ -414,13 +414,13 @@ footer{background:var(--ink);color:rgba(251,247,241,0.7);padding:70px 0 30px;}
 }
 @media (max-width:760px){.stat-band{grid-template-columns:repeat(2,minmax(0,1fr));}}
 .stat-band>div{
-  padding:34px 16px;text-align:center;border-right:1px solid var(--border-light);
+  padding:30px 10px;text-align:center;border-right:1px solid var(--border-light);
   min-width:0;
 }
 .stat-band>div:last-child{border-right:none;}
 .stat-band .stat-num{
-  font-family:var(--serif);font-size:clamp(15px,1.6vw,20px);color:var(--gold);
-  line-height:1.25;word-break:break-word;
+  font-family:var(--serif);font-size:clamp(13px,1.3vw,17px);color:var(--gold);
+  line-height:1.25;white-space:nowrap;
 }
 .stat-band .stat-label{font-size:12.5px;margin-top:8px;color:rgba(251,247,241,0.65);}
 
