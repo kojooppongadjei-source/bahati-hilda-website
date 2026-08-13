@@ -214,7 +214,7 @@ section{padding:90px 0;}
 .lede{
   font-size:18px;line-height:1.65;color:var(--ink-soft);margin-top:18px;
 }
-.section-dark .lede, .section-wine .lede{color:rgba(251,247,241,0.82);}
+.section-dark .lede, .section-wine .lede, .page-header .lede{color:rgba(251,247,241,0.82);}
 
 /* ============ HERO ============ */
 .hero{
