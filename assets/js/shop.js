@@ -1,6 +1,6 @@
 // ============ PRODUCT CATALOG ============
 // To add more books or souvenirs later, just add another object here.
-// Digital products need `digital: true` and a `file` path — after payment
+// Digital products need `digital: true` and a `file` path. After payment
 // succeeds, the file download starts automatically for that item.
 const PRODUCTS = [
   {
@@ -19,19 +19,19 @@ const PRODUCTS = [
   },
   {
     id: 'ebook-deliberately-selfish',
-    name: 'Deliberately Selfish — Digital Edition',
+    name: 'Deliberately Selfish (Digital Edition)',
     price: 20000,
     image: '/assets/images/book-deliberately-selfish.jpg',
-    description: 'Instant PDF download — read on any device, right after payment.',
+    description: 'Instant PDF download, read on any device, right after payment.',
     digital: true,
     file: '/assets/downloads/deliberately-selfish.pdf'
   },
   {
     id: 'ebook-tears-on-my-pillow',
-    name: 'Tears on My Pillow — Digital Edition',
+    name: 'Tears on My Pillow (Digital Edition)',
     price: 20000,
     image: '/assets/images/book-tears-on-my-pillow.jpg',
-    description: 'Instant PDF download — read on any device, right after payment.',
+    description: 'Instant PDF download, read on any device, right after payment.',
     digital: true,
     file: '/assets/downloads/tears-on-my-pillow.pdf'
   }
@@ -162,7 +162,7 @@ function payWithFlutterwave(){
   const txRef = 'BHS_' + Date.now();
 
   if (typeof FlutterwaveCheckout !== 'function') {
-    msgEl.textContent = 'Payment system is still loading — please try again in a moment.';
+    msgEl.textContent = 'Payment system is still loading, please try again in a moment.';
     msgEl.className = 'cart-msg error';
     return;
   }
@@ -175,7 +175,7 @@ function payWithFlutterwave(){
     payment_options: 'card, mobilemoneyuganda, ussd',
     customer: { email: email, phone_number: phone, name: name },
     customizations: {
-      title: 'Bahati Hilda Sabiti — Bookstore',
+      title: 'Dr. Bahati Hilda Sabiti | Bookstore',
       description: 'Order ' + txRef,
       logo: '/assets/images/hilda-portrait-cream-coat.jpg'
     },
@@ -199,10 +199,10 @@ function payWithFlutterwave(){
       });
 
       if (digitalItems.length > 0) {
-        msgEl.innerHTML = 'Payment received — thank you! Your download' + (digitalItems.length > 1 ? 's have' : ' has') + ' started. If it didn\'t open automatically, ' +
+        msgEl.innerHTML = 'Payment received, thank you! Your download' + (digitalItems.length > 1 ? 's have' : ' has') + ' started. If it didn\'t open automatically, ' +
           digitalItems.map(function(p){ return '<a href="' + p.file + '" download>' + p.name + '</a>'; }).join(' · ') + '.';
       } else {
-        msgEl.textContent = 'Payment received — thank you! A confirmation will be sent to ' + email + '.';
+        msgEl.textContent = 'Payment received, thank you! A confirmation will be sent to ' + email + '.';
       }
       msgEl.className = 'cart-msg success';
       localStorage.removeItem(CART_KEY);
