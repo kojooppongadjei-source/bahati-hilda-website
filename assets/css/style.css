@@ -341,6 +341,7 @@ section{padding:90px 0;}
   display:block;margin-top:26px;font-style:normal;font-size:13.5px;
   letter-spacing:0.06em;text-transform:uppercase;color:var(--gold);
 }
+.section-wine .pullquote cite{color:var(--gold-soft);}
 
 /* ============ GALLERY ============ */
 .gallery-grid{
