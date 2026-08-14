@@ -1,5 +1,7 @@
 // ============ PRODUCT CATALOG ============
 // To add more books or souvenirs later, just add another object here.
+// Digital products need `digital: true` and a `file` path — after payment
+// succeeds, the file download starts automatically for that item.
 const PRODUCTS = [
   {
     id: 'book-deliberately-selfish',
@@ -14,6 +16,24 @@ const PRODUCTS = [
     price: 45000,
     image: '/assets/images/book-tears-on-my-pillow.jpg',
     description: 'A raw, honest account of marriage, heartbreak and healing.'
+  },
+  {
+    id: 'ebook-deliberately-selfish',
+    name: 'Deliberately Selfish — Digital Edition',
+    price: 20000,
+    image: '/assets/images/book-deliberately-selfish.jpg',
+    description: 'Instant PDF download — read on any device, right after payment.',
+    digital: true,
+    file: '/assets/downloads/deliberately-selfish.pdf'
+  },
+  {
+    id: 'ebook-tears-on-my-pillow',
+    name: 'Tears on My Pillow — Digital Edition',
+    price: 20000,
+    image: '/assets/images/book-tears-on-my-pillow.jpg',
+    description: 'Instant PDF download — read on any device, right after payment.',
+    digital: true,
+    file: '/assets/downloads/tears-on-my-pillow.pdf'
   }
 ];
 
@@ -157,10 +177,33 @@ function payWithFlutterwave(){
     customizations: {
       title: 'Bahati Hilda Sabiti — Bookstore',
       description: 'Order ' + txRef,
-      logo: '/assets/images/headshot-closeup.jpg'
+      logo: '/assets/images/hilda-portrait-cream-coat.jpg'
     },
     callback: function(){
-      msgEl.textContent = 'Payment received — thank you! A confirmation will be sent to ' + email + '.';
+      const cart = getCart();
+      const digitalItems = Object.keys(cart)
+        .map(function(id){ return PRODUCTS.find(function(p){ return p.id === id; }); })
+        .filter(function(p){ return p && p.digital; });
+
+      // Trigger a download for each digital item purchased, staggered
+      // slightly so the browser doesn't block multiple simultaneous downloads.
+      digitalItems.forEach(function(p, i){
+        setTimeout(function(){
+          const a = document.createElement('a');
+          a.href = p.file;
+          a.download = '';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }, i * 800);
+      });
+
+      if (digitalItems.length > 0) {
+        msgEl.innerHTML = 'Payment received — thank you! Your download' + (digitalItems.length > 1 ? 's have' : ' has') + ' started. If it didn\'t open automatically, ' +
+          digitalItems.map(function(p){ return '<a href="' + p.file + '" download>' + p.name + '</a>'; }).join(' · ') + '.';
+      } else {
+        msgEl.textContent = 'Payment received — thank you! A confirmation will be sent to ' + email + '.';
+      }
       msgEl.className = 'cart-msg success';
       localStorage.removeItem(CART_KEY);
       renderCartCount();
