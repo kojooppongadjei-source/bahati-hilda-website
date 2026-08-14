@@ -309,6 +309,8 @@ section{padding:90px 0;}
 }
 .pillar-card h3{font-size:23px;margin-top:12px;}
 .pillar-card p{margin-top:14px;color:var(--ink-soft);font-size:15.5px;line-height:1.65;}
+.section-dark .pillar-card p, .section-wine .pillar-card p{color:rgba(255,255,255,0.72);}
+.section-dark .pillar-card .pillar-num, .section-wine .pillar-card .pillar-num{color:var(--gold);}
 
 /* ============ BOOK SHOWCASE ============ */
 .book-row{
