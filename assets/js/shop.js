@@ -13,7 +13,7 @@ const PRODUCTS = [
     name: 'Tears on My Pillow',
     price: 45000,
     image: '/assets/images/book-tears-on-my-pillow.jpg',
-    description: 'Co-authored with Tim Sabiti — a raw, honest account of marriage, heartbreak and healing.'
+    description: 'A raw, honest account of marriage, heartbreak and healing.'
   }
 ];
 
