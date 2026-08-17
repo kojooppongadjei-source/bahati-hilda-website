@@ -39,8 +39,7 @@ const PRODUCTS = [
 
 const CART_KEY = 'bhs_cart_v1';
 const CURRENCY = 'UGX';
-// TODO: replace with the real Flutterwave public key once the merchant account is live.
-const FLW_PUBLIC_KEY = 'FLWPUBK_TEST-SANDBOXDEMOKEY-X';
+const FLW_PUBLIC_KEY = 'FLWPUBK-06aad0a3fd4609421d774be186af3fc8-X';
 
 function getCart(){
   try { return JSON.parse(localStorage.getItem(CART_KEY)) || {}; } catch(e){ return {}; }
