@@ -131,7 +131,10 @@ async function sendOrderEmail({ tx, customer, items, tx_ref }) {
       },
       body: JSON.stringify({
         from: "Bahati Hilda Bookstore <onboarding@resend.dev>",
-        to: ["bahatihilda@gmail.com"],
+        // TEMP: Resend's test sender (onboarding@resend.dev) can only deliver
+        // to the email the Resend account was signed up with. Switch this to
+        // bahatihilda@gmail.com once a sending domain is verified.
+        to: ["kojo.oppongadjei@gmail.com"],
         subject: `New order ${tx_ref}${hasPhysical ? " (physical delivery)" : ""}`,
         html,
       }),
