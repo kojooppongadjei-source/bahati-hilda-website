@@ -58,6 +58,9 @@
       <input type="text" id="checkout-name" placeholder="Full Name" required>
       <input type="email" id="checkout-email" placeholder="Email Address" required>
       <input type="tel" id="checkout-phone" placeholder="Phone Number (for Mobile Money)" required>
+      <div id="checkout-address-wrap" style="display:none;">
+        <textarea id="checkout-address" placeholder="Delivery Address (for physical book orders)" rows="3" style="width:100%;resize:vertical;"></textarea>
+      </div>
       <button class="btn btn-gold btn-block" id="pay-btn">Pay with Flutterwave</button>
     </div>
     <div class="cart-msg" id="cart-msg"></div>

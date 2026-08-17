@@ -79,6 +79,13 @@ function cartSubtotal(){
   });
   return total;
 }
+function cartHasPhysical(){
+  const cart = getCart();
+  return Object.keys(cart).some(function(id){
+    const p = PRODUCTS.find(function(x){ return x.id === id; });
+    return p && !p.digital;
+  });
+}
 function formatUGX(n){
   return 'UGX ' + n.toLocaleString('en-UG');
 }
@@ -139,6 +146,8 @@ function showCheckoutFields(){
   if (Object.keys(cart).length === 0) return;
   const fields = document.getElementById('checkout-fields');
   const toggleBtn = document.getElementById('checkout-toggle-btn');
+  const addressWrap = document.getElementById('checkout-address-wrap');
+  if (addressWrap) addressWrap.style.display = cartHasPhysical() ? '' : 'none';
   if (fields) fields.classList.add('show');
   if (toggleBtn) toggleBtn.style.display = 'none';
 }
@@ -149,10 +158,18 @@ function payWithFlutterwave(){
   const name = document.getElementById('checkout-name').value.trim();
   const email = document.getElementById('checkout-email').value.trim();
   const phone = document.getElementById('checkout-phone').value.trim();
+  const addressEl = document.getElementById('checkout-address');
+  const address = addressEl ? addressEl.value.trim() : '';
+  const hasPhysical = cartHasPhysical();
   const msgEl = document.getElementById('cart-msg');
 
   if (!name || !email || !phone) {
     msgEl.textContent = 'Please fill in your name, email and phone number.';
+    msgEl.className = 'cart-msg error';
+    return;
+  }
+  if (hasPhysical && !address) {
+    msgEl.textContent = 'Please add a delivery address for your physical book(s).';
     msgEl.className = 'cart-msg error';
     return;
   }
@@ -192,7 +209,12 @@ function payWithFlutterwave(){
           transaction_id: flwResponse.transaction_id,
           expected_amount: amount,
           expected_currency: CURRENCY,
-          tx_ref: txRef
+          tx_ref: txRef,
+          customer: { name: name, email: email, phone: phone, address: address },
+          items: Object.keys(cart).map(function(id){
+            const p = PRODUCTS.find(function(x){ return x.id === id; });
+            return p ? { name: p.name, qty: cart[id], price: p.price, digital: !!p.digital } : null;
+          }).filter(Boolean)
         })
       })
         .then(function(res){ return res.json(); })
