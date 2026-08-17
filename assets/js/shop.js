@@ -178,39 +178,68 @@ function payWithFlutterwave(){
       description: 'Order ' + txRef,
       logo: '/assets/images/hilda-portrait-cream-coat.jpg'
     },
-    callback: function(){
-      const cart = getCart();
-      const digitalItems = Object.keys(cart)
-        .map(function(id){ return PRODUCTS.find(function(p){ return p.id === id; }); })
-        .filter(function(p){ return p && p.digital; });
+    callback: function(flwResponse){
+      // IMPORTANT: this client-side callback firing is NOT proof of payment —
+      // it can be spoofed. We re-check with our own backend, which calls
+      // Flutterwave's verify endpoint using the secret key server-side.
+      msgEl.textContent = 'Confirming your payment, please wait...';
+      msgEl.className = 'cart-msg';
 
-      // Trigger a download for each digital item purchased, staggered
-      // slightly so the browser doesn't block multiple simultaneous downloads.
-      digitalItems.forEach(function(p, i){
-        setTimeout(function(){
-          const a = document.createElement('a');
-          a.href = p.file;
-          a.download = '';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        }, i * 800);
-      });
+      fetch('/.netlify/functions/verify-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          transaction_id: flwResponse.transaction_id,
+          expected_amount: amount,
+          expected_currency: CURRENCY,
+          tx_ref: txRef
+        })
+      })
+        .then(function(res){ return res.json(); })
+        .then(function(result){
+          if (!result.verified) {
+            msgEl.textContent = 'We could not confirm this payment. If money left your account, please contact us with reference ' + txRef + '.';
+            msgEl.className = 'cart-msg error';
+            return;
+          }
 
-      if (digitalItems.length > 0) {
-        msgEl.innerHTML = 'Payment received, thank you! Your download' + (digitalItems.length > 1 ? 's have' : ' has') + ' started. If it didn\'t open automatically, ' +
-          digitalItems.map(function(p){ return '<a href="' + p.file + '" download>' + p.name + '</a>'; }).join(' · ') + '.';
-      } else {
-        msgEl.textContent = 'Payment received, thank you! A confirmation will be sent to ' + email + '.';
-      }
-      msgEl.className = 'cart-msg success';
-      localStorage.removeItem(CART_KEY);
-      renderCartCount();
-      renderCartDrawer();
-      const fields = document.getElementById('checkout-fields');
-      const toggleBtn = document.getElementById('checkout-toggle-btn');
-      if (fields) fields.classList.remove('show');
-      if (toggleBtn) toggleBtn.style.display = '';
+          const cart = getCart();
+          const digitalItems = Object.keys(cart)
+            .map(function(id){ return PRODUCTS.find(function(p){ return p.id === id; }); })
+            .filter(function(p){ return p && p.digital; });
+
+          // Trigger a download for each digital item purchased, staggered
+          // slightly so the browser doesn't block multiple simultaneous downloads.
+          digitalItems.forEach(function(p, i){
+            setTimeout(function(){
+              const a = document.createElement('a');
+              a.href = p.file;
+              a.download = '';
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+            }, i * 800);
+          });
+
+          if (digitalItems.length > 0) {
+            msgEl.innerHTML = 'Payment confirmed, thank you! Your download' + (digitalItems.length > 1 ? 's have' : ' has') + ' started. If it didn\'t open automatically, ' +
+              digitalItems.map(function(p){ return '<a href="' + p.file + '" download>' + p.name + '</a>'; }).join(' · ') + '.';
+          } else {
+            msgEl.textContent = 'Payment confirmed, thank you! A confirmation will be sent to ' + email + '.';
+          }
+          msgEl.className = 'cart-msg success';
+          localStorage.removeItem(CART_KEY);
+          renderCartCount();
+          renderCartDrawer();
+          const fields = document.getElementById('checkout-fields');
+          const toggleBtn = document.getElementById('checkout-toggle-btn');
+          if (fields) fields.classList.remove('show');
+          if (toggleBtn) toggleBtn.style.display = '';
+        })
+        .catch(function(){
+          msgEl.textContent = 'We could not confirm this payment right now. If money left your account, please contact us with reference ' + txRef + '.';
+          msgEl.className = 'cart-msg error';
+        });
     },
     onclose: function(){}
   });
