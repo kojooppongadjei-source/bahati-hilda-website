@@ -55,60 +55,6 @@ button{font-family:inherit;cursor:pointer;}
 .eyebrow.on-dark{color:var(--gold);}
 
 /* ============ SPINE INDEX (signature element) ============ */
-.spine-index{
-  position:fixed;
-  left:0;
-  top:0;
-  height:100vh;
-  width:52px;
-  z-index:500;
-  display:none;
-  flex-direction:column;
-  background:var(--ink);
-  border-right:1px solid var(--border-light);
-}
-@media (min-width:1020px){
-  .spine-index{display:flex;}
-  body{padding-left:52px;}
-}
-.spine-index a{
-  flex:1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-bottom:1px solid var(--border-light);
-  position:relative;
-  transition:background .25s ease;
-}
-.spine-index a:last-child{border-bottom:none;}
-.spine-index a:hover, .spine-index a.active{background:var(--wine-deep);}
-.spine-index a span{
-  writing-mode:vertical-rl;
-  transform:rotate(180deg);
-  font-family:var(--sans);
-  font-size:10.5px;
-  font-weight:700;
-  letter-spacing:0.14em;
-  text-transform:uppercase;
-  color:var(--gold-soft);
-  white-space:nowrap;
-}
-.spine-index a.active span{color:var(--white);}
-.spine-index .spine-mark{
-  padding:16px 0;
-  display:flex;
-  justify-content:center;
-  border-bottom:1px solid var(--border-light);
-  flex:none;
-}
-.spine-index .spine-mark span{
-  writing-mode:vertical-rl;
-  font-family:var(--serif);
-  font-style:italic;
-  font-size:13px;
-  color:var(--gold);
-}
-
 /* ============ TOP NAV ============ */
 .topnav{
   position:sticky;top:0;z-index:400;
