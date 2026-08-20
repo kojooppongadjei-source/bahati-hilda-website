@@ -39,7 +39,7 @@ const PRODUCTS = [
 
 const CART_KEY = 'bhs_cart_v1';
 const CURRENCY = 'UGX';
-const FLW_PUBLIC_KEY = 'FLWPUBK-06aad0a3fd4609421d774be186af3fc8-X';
+const FLW_PUBLIC_KEY = 'FLWPUBK-0ca4b5cd4a979d874b5aafe0f61a23da-X';
 
 function getCart(){
   try { return JSON.parse(localStorage.getItem(CART_KEY)) || {}; } catch(e){ return {}; }
