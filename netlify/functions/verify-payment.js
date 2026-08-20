@@ -132,10 +132,13 @@ async function sendOrderEmail({ tx, customer, items, tx_ref, shipping }) {
       },
       body: JSON.stringify({
         from: "Bahati Hilda Bookstore <onboarding@resend.dev>",
-        // TEMP: Resend's test sender (onboarding@resend.dev) can only deliver
-        // to the email the Resend account was signed up with. Switch this to
-        // bahatihilda@gmail.com once a sending domain is verified.
-        to: ["kojo.oppongadjei@gmail.com"],
+        // IMPORTANT: Resend's test sender (onboarding@resend.dev) can only
+        // deliver to the email the Resend account was signed up with. If
+        // info@bahatihildasabiti.com isn't that exact address, delivery will
+        // fail silently (logged only, nothing shown to the customer). The
+        // reliable fix is verifying bahatihildasabiti.com as a sending
+        // domain in Resend, then switching `from` to an address on it.
+        to: ["info@bahatihildasabiti.com"],
         subject: `New order ${tx_ref}${hasPhysical ? " (physical delivery)" : ""}`,
         html,
       }),
