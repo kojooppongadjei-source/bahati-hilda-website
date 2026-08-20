@@ -47,12 +47,26 @@
   </div>
   <div class="cart-drawer-foot">
     <div class="cart-subtotal"><span>Subtotal</span><span id="cart-subtotal-val">UGX 0</span></div>
+    <div id="order-breakdown" style="display:none;font-size:13px;color:#555;margin:-4px 0 10px;padding:10px 12px;background:#faf7f5;border-radius:8px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span>Book price</span><span id="order-book-val">UGX 0</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span>Estimated shipping</span><span id="order-shipping-val">Select region below</span></div>
+      <div style="display:flex;justify-content:space-between;font-weight:700;border-top:1px solid #e5ddd8;padding-top:4px;margin-top:2px;"><span>Total</span><span id="order-total-val">UGX 0</span></div>
+    </div>
     <button class="btn btn-primary btn-block" id="checkout-toggle-btn">Checkout</button>
     <div class="checkout-fields" id="checkout-fields">
       <input type="text" id="checkout-name" placeholder="Full Name" required>
       <input type="email" id="checkout-email" placeholder="Email Address" required>
       <input type="tel" id="checkout-phone" placeholder="Phone Number (for Mobile Money)" required>
       <div id="checkout-address-wrap" style="display:none;">
+        <select id="checkout-region" style="width:100%;padding:10px;margin-bottom:8px;border-radius:6px;border:1px solid #ccc;">
+          <option value="">Select delivery region for shipping estimate</option>
+          <option value="uganda">Uganda</option>
+          <option value="east_africa">East Africa (Kenya, Tanzania, Rwanda, Burundi, South Sudan, DRC)</option>
+          <option value="rest_of_africa">Rest of Africa</option>
+          <option value="uk_europe">UK & Europe</option>
+          <option value="usa_canada">USA & Canada</option>
+          <option value="other">Other International</option>
+        </select>
         <textarea id="checkout-address" placeholder="Delivery Address (for physical book orders)" rows="3" style="width:100%;resize:vertical;"></textarea>
       </div>
       <button class="btn btn-gold btn-block" id="pay-btn">Pay with Flutterwave</button>
@@ -112,7 +126,7 @@
         <div class="product-card-body">
           <h3>Deliberately Selfish <span style="font-size:12px;color:var(--wine);font-weight:700;text-transform:uppercase;">PDF Edition</span></h3>
           <p>Instant PDF download, read on any device, right after payment.</p>
-          <div class="product-price">UGX 20,000</div>
+          <div class="product-price">UGX 30,000</div>
           <button class="btn btn-primary btn-block add-to-cart-btn" data-id="ebook-deliberately-selfish">Add to Cart</button>
         </div>
       </div>
@@ -121,7 +135,7 @@
         <div class="product-card-body">
           <h3>Tears on My Pillow <span style="font-size:12px;color:var(--wine);font-weight:700;text-transform:uppercase;">PDF Edition</span></h3>
           <p>Instant PDF download, read on any device, right after payment.</p>
-          <div class="product-price">UGX 20,000</div>
+          <div class="product-price">UGX 30,000</div>
           <button class="btn btn-primary btn-block add-to-cart-btn" data-id="ebook-tears-on-my-pillow">Add to Cart</button>
         </div>
       </div>

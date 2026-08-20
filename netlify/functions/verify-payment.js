@@ -17,7 +17,7 @@ exports.handler = async function (event) {
     return { statusCode: 400, body: JSON.stringify({ error: "Invalid JSON" }) };
   }
 
-  const { transaction_id, expected_amount, expected_currency, tx_ref, customer, items } = body;
+  const { transaction_id, expected_amount, expected_currency, tx_ref, customer, items, shipping } = body;
 
   if (!transaction_id) {
     return {
@@ -68,7 +68,7 @@ exports.handler = async function (event) {
     const verified = amountOk && currencyOk && refOk && statusOk;
 
     if (verified) {
-      await sendOrderEmail({ tx, customer, items, tx_ref });
+      await sendOrderEmail({ tx, customer, items, tx_ref, shipping });
     }
 
     return {
@@ -94,7 +94,7 @@ exports.handler = async function (event) {
 // Sends an order notification to Hilda's team via Resend.
 // Failure to send email never blocks the customer's payment confirmation —
 // it's a best-effort notification, so errors are only logged.
-async function sendOrderEmail({ tx, customer, items, tx_ref }) {
+async function sendOrderEmail({ tx, customer, items, tx_ref, shipping }) {
   const resendKey = process.env.RESEND_API_KEY;
   if (!resendKey) {
     console.error("RESEND_API_KEY is not set — skipping order email");
@@ -115,6 +115,7 @@ async function sendOrderEmail({ tx, customer, items, tx_ref }) {
     <p><strong>Amount paid:</strong> ${tx.currency} ${Number(tx.amount).toLocaleString("en-UG")}</p>
     <p><strong>Customer:</strong> ${escapeHtml(customer && customer.name)} — ${escapeHtml(customer && customer.email)} — ${escapeHtml(customer && customer.phone)}</p>
     ${hasPhysical ? `<p><strong>Delivery address:</strong><br>${escapeHtml(customer && customer.address).replace(/\n/g, "<br>")}</p>` : ""}
+    ${shipping ? `<p><strong>Shipping region:</strong> ${escapeHtml(shipping.region)} (${escapeHtml(String(shipping.fee))} UGX)</p>` : ""}
     <table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;">
       <tr><th>Item</th><th>Qty</th><th>Price</th></tr>
       ${itemRows}

@@ -20,7 +20,7 @@ const PRODUCTS = [
   {
     id: 'ebook-deliberately-selfish',
     name: 'Deliberately Selfish (Digital Edition)',
-    price: 20000,
+    price: 30000,
     image: '/assets/images/book-deliberately-selfish.jpg',
     description: 'Instant PDF download, read on any device, right after payment.',
     digital: true,
@@ -29,7 +29,7 @@ const PRODUCTS = [
   {
     id: 'ebook-tears-on-my-pillow',
     name: 'Tears on My Pillow (Digital Edition)',
-    price: 20000,
+    price: 30000,
     image: '/assets/images/book-tears-on-my-pillow.jpg',
     description: 'Instant PDF download, read on any device, right after payment.',
     digital: true,
@@ -40,6 +40,33 @@ const PRODUCTS = [
 const CART_KEY = 'bhs_cart_v1';
 const CURRENCY = 'UGX';
 const FLW_PUBLIC_KEY = 'FLWPUBK-0ca4b5cd4a979d874b5aafe0f61a23da-X';
+
+// ============ SHIPPING RATES ============
+// Flat estimated shipping fee per region, in UGX. These are starting
+// estimates — update them once real courier quotes (e.g. Uganda Post,
+// DHL) are confirmed. Only applies when the cart has a physical book.
+const SHIPPING_RATES = {
+  uganda: { label: 'Uganda', fee: 10000 },
+  east_africa: { label: 'East Africa (Kenya, Tanzania, Rwanda, Burundi, South Sudan, DRC)', fee: 25000 },
+  rest_of_africa: { label: 'Rest of Africa', fee: 45000 },
+  uk_europe: { label: 'UK & Europe', fee: 90000 },
+  usa_canada: { label: 'USA & Canada', fee: 100000 },
+  other: { label: 'Other International', fee: 110000 },
+};
+
+function getSelectedRegion(){
+  const el = document.getElementById('checkout-region');
+  return el ? el.value : '';
+}
+function shippingCost(){
+  if (!cartHasPhysical()) return 0;
+  const region = getSelectedRegion();
+  const rate = SHIPPING_RATES[region];
+  return rate ? rate.fee : 0;
+}
+function orderTotal(){
+  return cartSubtotal() + shippingCost();
+}
 
 function getCart(){
   try { return JSON.parse(localStorage.getItem(CART_KEY)) || {}; } catch(e){ return {}; }
@@ -125,6 +152,26 @@ function renderCartDrawer(){
   }
   const subtotalEl = document.getElementById('cart-subtotal-val');
   if (subtotalEl) subtotalEl.textContent = formatUGX(cartSubtotal());
+  updateOrderBreakdown();
+}
+
+function updateOrderBreakdown(){
+  const wrap = document.getElementById('order-breakdown');
+  if (!wrap) return;
+  const hasPhysical = cartHasPhysical();
+  if (!hasPhysical) {
+    wrap.style.display = 'none';
+    return;
+  }
+  wrap.style.display = '';
+  const region = getSelectedRegion();
+  const rate = SHIPPING_RATES[region];
+  const shipEl = document.getElementById('order-shipping-val');
+  const totalEl = document.getElementById('order-total-val');
+  const bookEl = document.getElementById('order-book-val');
+  if (bookEl) bookEl.textContent = formatUGX(cartSubtotal());
+  if (shipEl) shipEl.textContent = rate ? formatUGX(rate.fee) : 'Select region below';
+  if (totalEl) totalEl.textContent = formatUGX(orderTotal());
 }
 
 function openCart(){
@@ -150,6 +197,7 @@ function showCheckoutFields(){
   if (addressWrap) addressWrap.style.display = cartHasPhysical() ? '' : 'none';
   if (fields) fields.classList.add('show');
   if (toggleBtn) toggleBtn.style.display = 'none';
+  updateOrderBreakdown();
 }
 
 function payWithFlutterwave(){
@@ -160,6 +208,8 @@ function payWithFlutterwave(){
   const phone = document.getElementById('checkout-phone').value.trim();
   const addressEl = document.getElementById('checkout-address');
   const address = addressEl ? addressEl.value.trim() : '';
+  const regionEl = document.getElementById('checkout-region');
+  const region = regionEl ? regionEl.value : '';
   const hasPhysical = cartHasPhysical();
   const msgEl = document.getElementById('cart-msg');
 
@@ -173,8 +223,14 @@ function payWithFlutterwave(){
     msgEl.className = 'cart-msg error';
     return;
   }
+  if (hasPhysical && !SHIPPING_RATES[region]) {
+    msgEl.textContent = 'Please select your delivery region so we can calculate shipping.';
+    msgEl.className = 'cart-msg error';
+    return;
+  }
 
-  const amount = cartSubtotal();
+  const shipping = shippingCost();
+  const amount = orderTotal();
   const txRef = 'BHS_' + Date.now();
 
   if (typeof FlutterwaveCheckout !== 'function') {
@@ -211,6 +267,7 @@ function payWithFlutterwave(){
           expected_currency: CURRENCY,
           tx_ref: txRef,
           customer: { name: name, email: email, phone: phone, address: address },
+          shipping: hasPhysical ? { region: SHIPPING_RATES[region] ? SHIPPING_RATES[region].label : region, fee: shipping } : null,
           items: Object.keys(cart).map(function(id){
             const p = PRODUCTS.find(function(x){ return x.id === id; });
             return p ? { name: p.name, qty: cart[id], price: p.price, digital: !!p.digital } : null;
@@ -295,6 +352,9 @@ document.addEventListener('DOMContentLoaded', function(){
 
   const checkoutToggle = document.getElementById('checkout-toggle-btn');
   if (checkoutToggle) checkoutToggle.addEventListener('click', showCheckoutFields);
+
+  const regionSelect = document.getElementById('checkout-region');
+  if (regionSelect) regionSelect.addEventListener('change', updateOrderBreakdown);
 
   const payBtn = document.getElementById('pay-btn');
   if (payBtn) payBtn.addEventListener('click', payWithFlutterwave);
