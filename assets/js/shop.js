@@ -247,7 +247,7 @@ function payWithFlutterwave(){
             msgEl.innerHTML = 'Payment confirmed, thank you! Your download' + (digitalItems.length > 1 ? 's have' : ' has') + ' started. If it didn\'t open automatically, ' +
               digitalItems.map(function(p){ return '<a href="' + p.file + '" download>' + p.name + '</a>'; }).join(' · ') + '.';
           } else {
-            msgEl.textContent = 'Payment confirmed, thank you! A confirmation will be sent to ' + email + '.';
+            msgEl.textContent = 'Payment confirmed, thank you! Your book' + (Object.keys(cart).length > 1 ? 's are' : ' is') + ' being prepared for delivery. Our team will contact you on ' + phone + ' or ' + email + ' shortly to arrange delivery. Your reference is ' + txRef + '.';
           }
           msgEl.className = 'cart-msg success';
           localStorage.removeItem(CART_KEY);
