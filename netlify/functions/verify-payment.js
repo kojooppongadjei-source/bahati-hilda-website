@@ -95,9 +95,9 @@ exports.handler = async function (event) {
 // Failure to send email never blocks the customer's payment confirmation —
 // it's a best-effort notification, so errors are only logged.
 async function sendOrderEmail({ tx, customer, items, tx_ref, shipping }) {
-  const resendKey = process.env.RESEND_API_KEY;
-  if (!resendKey) {
-    console.error("RESEND_API_KEY is not set — skipping order email");
+  const smtpPassword = process.env.SMTP_PASSWORD;
+  if (!smtpPassword) {
+    console.error("SMTP_PASSWORD is not set — skipping order email");
     return;
   }
 
@@ -124,31 +124,24 @@ async function sendOrderEmail({ tx, customer, items, tx_ref, shipping }) {
   `;
 
   try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${resendKey}`,
-        "Content-Type": "application/json",
+    const nodemailer = require("nodemailer");
+    const transporter = nodemailer.createTransport({
+      host: "smtp.privateemail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: "info@bahatihildasabiti.com",
+        pass: smtpPassword,
       },
-      body: JSON.stringify({
-        from: "Bahati Hilda Bookstore <onboarding@resend.dev>",
-        // IMPORTANT: Resend's test sender (onboarding@resend.dev) can only
-        // deliver to the email the Resend account was signed up with. If
-        // info@bahatihildasabiti.com isn't that exact address, delivery will
-        // fail silently (logged only, nothing shown to the customer). The
-        // reliable fix is verifying bahatihildasabiti.com as a sending
-        // domain in Resend, then switching `from` to an address on it.
-        to: ["info@bahatihildasabiti.com"],
-        subject: `New order ${tx_ref}${hasPhysical ? " (physical delivery)" : ""}`,
-        html,
-      }),
     });
-    if (!res.ok) {
-      const errText = await res.text();
-      console.error("Resend send failed:", res.status, errText);
-    }
+    await transporter.sendMail({
+      from: '"Bahati Hilda Bookstore" <info@bahatihildasabiti.com>',
+      to: "info@bahatihildasabiti.com",
+      subject: `New order ${tx_ref}${hasPhysical ? " (physical delivery)" : ""}`,
+      html,
+    });
   } catch (err) {
-    console.error("Resend send error:", err);
+    console.error("SMTP send error:", err);
   }
 }
 
