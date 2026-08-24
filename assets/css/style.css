@@ -83,12 +83,13 @@ button{font-family:inherit;cursor:pointer;}
   .brand{font-size:15px;gap:8px;}
   .brand img{width:32px;height:32px;}
 }
-.nav-links{display:none;gap:34px;align-items:center;}
-@media (min-width:860px){.nav-links{display:flex;}}
+.nav-links{display:none;gap:18px;align-items:center;}
+@media (min-width:1400px){.nav-links{display:flex;}}
 .nav-links a{
-  font-size:13.5px;font-weight:600;letter-spacing:0.03em;
+  font-size:12px;font-weight:600;letter-spacing:0.02em;
   text-transform:uppercase;color:rgba(255,255,255,0.82);
   padding:6px 0;border-bottom:2px solid transparent;
+  white-space:nowrap;
   transition:border-color .2s ease, color .2s ease;
 }
 .nav-links a:hover, .nav-links a.active{border-color:var(--gold);color:var(--white);}
@@ -96,10 +97,10 @@ button{font-family:inherit;cursor:pointer;}
   display:none;
   font-size:13px;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;
   background:var(--gold);color:var(--ink);
-  padding:12px 22px;border-radius:2px;
+  padding:12px 22px;border-radius:2px;white-space:nowrap;
   transition:background .2s ease;
 }
-@media (min-width:860px){.nav-cta{display:inline-block;}}
+@media (min-width:1400px){.nav-cta{display:inline-block;}}
 .nav-cta:hover{background:var(--gold-soft);}
 
 .cart-btn{
@@ -121,7 +122,7 @@ button{font-family:inherit;cursor:pointer;}
 .mobile-toggle{
   display:flex;flex-direction:column;gap:5px;background:none;border:none;padding:8px;
 }
-@media (min-width:860px){.mobile-toggle{display:none;}}
+@media (min-width:1400px){.mobile-toggle{display:none;}}
 .mobile-toggle span{width:24px;height:2px;background:var(--white);display:block;}
 .mobile-menu{
   display:none;flex-direction:column;
