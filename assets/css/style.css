@@ -309,6 +309,8 @@ section{padding:90px 0;}
   border:1px solid var(--border);overflow:hidden;
 }
 @media (max-width:760px){.option-card{grid-template-columns:1fr;min-height:0;}}
+.option-card.text-only{grid-template-columns:1fr;min-height:0;}
+.option-card.text-only .option-card-body{padding:34px 38px;}
 .option-card img{
   width:100%;height:100%;object-fit:cover;display:block;
 }
