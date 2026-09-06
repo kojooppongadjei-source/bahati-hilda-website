@@ -350,5 +350,109 @@
 <script src="/assets/js/main.js"></script>
 <script src="https://checkout.flutterwave.com/v3.js"></script>
 <script src="/assets/js/shop.js"></script>
+
+<!-- 7 POWER SYSTEMS ENTRANCE POPUP -->
+<style>
+#p7-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);
+  z-index:9999;align-items:center;justify-content:center;padding:16px;
+}
+#p7-overlay.show{display:flex;}
+#p7-modal{
+  background:#fff;border-radius:16px;max-width:420px;width:100%;
+  overflow:hidden;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.3);
+  animation:p7Pop .3s ease;max-height:92vh;overflow-y:auto;
+}
+@keyframes p7Pop{from{opacity:0;transform:scale(.95);}to{opacity:1;transform:scale(1);}}
+.p7-close{
+  position:absolute;top:10px;right:10px;width:30px;height:30px;
+  border-radius:50%;background:rgba(0,0,0,0.55);color:#fff;border:none;
+  cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;
+  transition:background .2s;z-index:2;
+}
+.p7-close:hover{background:rgba(0,0,0,0.8);}
+#p7-img{width:100%;height:auto;display:block;aspect-ratio:3/4;object-fit:cover;object-position:top center;}
+.p7-body{padding:22px 24px 24px;}
+.p7-eyebrow{
+  font-size:10px;font-weight:800;text-transform:uppercase;
+  letter-spacing:2px;color:var(--wine-deep);margin-bottom:8px;
+}
+.p7-title{
+  font-family:var(--serif);
+  font-size:20px;font-weight:800;color:var(--ink);
+  line-height:1.25;margin-bottom:10px;
+}
+.p7-details{
+  display:flex;flex-direction:column;gap:6px;
+  margin-bottom:16px;
+}
+.p7-detail{font-size:13px;color:#444;display:flex;align-items:center;gap:8px;}
+.p7-detail strong{color:var(--ink);}
+.p7-price{
+  background:var(--white-dim);border:1px solid var(--gold-soft);
+  border-radius:8px;padding:10px 14px;
+  font-size:13.5px;font-weight:700;color:var(--wine-deep);
+  margin-bottom:16px;text-align:center;
+}
+.p7-actions{display:flex;gap:10px;}
+.p7-cta{
+  flex:1;text-align:center;padding:12px;
+  background:var(--gold);color:var(--ink);font-weight:700;
+  font-size:13px;border-radius:7px;text-decoration:none;
+  transition:background .2s;
+}
+.p7-cta:hover{background:var(--gold-soft);}
+.p7-cta-wa{
+  flex:1;text-align:center;padding:12px;
+  background:#25D366;color:#fff;font-weight:700;
+  font-size:13px;border-radius:7px;text-decoration:none;
+  transition:background .2s;
+}
+.p7-cta-wa:hover{background:#1ea952;}
+@media(max-width:480px){
+  #p7-modal{border-radius:12px;}
+  .p7-body{padding:18px 18px 20px;}
+}
+</style>
+
+<div id="p7-overlay" onclick="p7Close(event)">
+  <div id="p7-modal" onclick="event.stopPropagation()">
+    <button class="p7-close" onclick="p7Close()">&#10005;</button>
+    <img id="p7-img" src="/assets/images/7-power-systems-popup.jpg" alt="Package Yourself Like an Expert: The 7 Power Systems">
+    <div class="p7-body">
+      <div class="p7-eyebrow">&#10022; Now Registering</div>
+      <div class="p7-title">Package Yourself Like an Expert: The 7 Power Systems</div>
+      <div class="p7-details">
+        <div class="p7-detail">&#128197; <strong>8 Weeks</strong> &middot; Starts 1st October</div>
+        <div class="p7-detail">&#9203; Registration deadline: <strong>30th September</strong></div>
+      </div>
+      <div class="p7-price">UGX 2,500,000 full &middot; or UGX 1,250,000 &times; 2 instalments</div>
+      <div class="p7-actions">
+        <a class="p7-cta-wa" href="https://wa.me/256757117117?text=Hi%2C%20I%27d%20like%20to%20register%20for%20Package%20Yourself%20Like%20an%20Expert%3A%20The%207%20Power%20Systems" target="_blank" rel="noopener">&#128172; WhatsApp to Register</a>
+        <a class="p7-cta" href="/register-7-power-systems.html" onclick="p7Close()">Register Now &rarr;</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var P7_KEY = 'bhs_7_power_systems_popup_seen';
+  var COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours
+  var lastSeen = parseInt(localStorage.getItem(P7_KEY) || '0', 10);
+  if(Date.now() - lastSeen > COOLDOWN_MS){
+    setTimeout(function(){
+      document.getElementById('p7-overlay').classList.add('show');
+    }, 4000);
+  }
+})();
+
+function p7Close(e){
+  if(e && e.target !== document.getElementById('p7-overlay')) return;
+  document.getElementById('p7-overlay').classList.remove('show');
+  localStorage.setItem('bhs_7_power_systems_popup_seen', String(Date.now()));
+}
+</script>
+
 </body>
 </html>
