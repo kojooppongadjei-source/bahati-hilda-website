@@ -27,7 +27,11 @@ exports.handler = async function (event) {
 
   try {
     const { getStore } = require("@netlify/blobs");
-    const store = getStore("academy-registrations");
+    const store = getStore({
+      name: "academy-registrations",
+      siteID: process.env.NETLIFY_SITE_ID,
+      token: process.env.NETLIFY_BLOBS_TOKEN,
+    });
     const { blobs } = await store.list();
 
     const records = await Promise.all(

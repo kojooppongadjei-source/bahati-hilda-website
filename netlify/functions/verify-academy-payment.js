@@ -93,6 +93,19 @@ exports.handler = async function (event) {
   }
 };
 
+function getBlobStore() {
+  const { getStore } = require("@netlify/blobs");
+  // Zero-config getStore() relies on Netlify auto-injecting connection
+  // details into the function runtime, which isn't happening reliably
+  // for this project — so we configure it explicitly instead using a
+  // Personal Access Token (kept as a secret env var) and the site ID.
+  return getStore({
+    name: "academy-registrations",
+    siteID: process.env.NETLIFY_SITE_ID,
+    token: process.env.NETLIFY_BLOBS_TOKEN,
+  });
+}
+
 // Persists each verified registration to Netlify Blobs, so Hilda's team
 // can view registrations, payment status, and lead source from a simple
 // admin page instead of only reading through emails. Keyed by tx_ref so
@@ -100,8 +113,7 @@ exports.handler = async function (event) {
 // gets its own record.
 async function saveRegistration({ tx, student, tx_ref, plan }) {
   try {
-    const { getStore } = require("@netlify/blobs");
-    const store = getStore("academy-registrations");
+    const store = getBlobStore();
     const record = {
       tx_ref,
       name: student && student.name,
