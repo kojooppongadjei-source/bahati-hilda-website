@@ -55,6 +55,16 @@
   .reg-msg.success{color:#2F6B47;font-weight:600;}
   .reg-msg.info{color:var(--ink-soft);}
 
+  .curriculum-list{list-style:none;padding:0;margin:0;display:grid;gap:14px;}
+  .curriculum-item{display:flex;gap:16px;align-items:flex-start;padding:16px 18px;border-radius:10px;background:var(--white-dim);}
+  .curriculum-num{font-family:var(--serif);font-size:22px;font-weight:800;color:var(--gold);min-width:32px;}
+  .curriculum-item h4{font-size:15.5px;color:var(--ink);margin-bottom:4px;}
+  .curriculum-item p{font-size:13.5px;color:var(--ink-soft);margin:0;}
+  .bonus-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;}
+  @media (max-width:600px){.bonus-grid{grid-template-columns:1fr;}}
+  .bonus-item{display:flex;align-items:center;gap:10px;padding:12px 16px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;color:var(--ink);}
+  .bonus-item .star{color:var(--gold);font-size:15px;}
+
   #reg-confirmation{display:none;text-align:center;padding:60px 24px;max-width:640px;margin:0 auto;}
   #reg-confirmation h2{font-family:var(--serif);font-size:30px;color:var(--ink);margin-bottom:14px;}
   #reg-confirmation p{color:var(--ink-soft);font-size:15.5px;line-height:1.7;margin-bottom:10px;}
@@ -106,6 +116,53 @@
 </section>
 
 <div class="reg-wrap" id="register">
+
+  <h2 class="reg-section-title">What you'll master: The 7 Power Systems</h2>
+  <p class="reg-section-sub">A complete transformation, system by system, over 8 weeks.</p>
+
+  <ol class="curriculum-list" style="margin-bottom:44px;">
+    <li class="curriculum-item">
+      <div class="curriculum-num">1</div>
+      <div><h4>Clear Purpose &amp; Uniqueness Code</h4><p>Clarity + differentiation.</p></div>
+    </li>
+    <li class="curriculum-item">
+      <div class="curriculum-num">2</div>
+      <div><h4>Rich Brand Mindset &amp; Identity Shift</h4><p>Think, lead and earn as the expert.</p></div>
+    </li>
+    <li class="curriculum-item">
+      <div class="curriculum-num">3</div>
+      <div><h4>Content That Converts</h4><p>Turn visibility into trust, leads and sales.</p></div>
+    </li>
+    <li class="curriculum-item">
+      <div class="curriculum-num">4</div>
+      <div><h4>Speak With Authority</h4><p>Communicate, present and sell with confidence.</p></div>
+    </li>
+    <li class="curriculum-item">
+      <div class="curriculum-num">5</div>
+      <div><h4>The Coaching Blueprint</h4><p>Build a structured, transformational offer.</p></div>
+    </li>
+    <li class="curriculum-item">
+      <div class="curriculum-num">6</div>
+      <div><h4>Personal Brand Empire &amp; Wealth Engine</h4><p>Package expertise into scalable income.</p></div>
+    </li>
+    <li class="curriculum-item">
+      <div class="curriculum-num">7</div>
+      <div><h4>The Million Dollar Image</h4><p>Align presence, perception and value.</p></div>
+    </li>
+  </ol>
+
+  <h2 class="reg-section-title">Plus these bonuses</h2>
+  <p class="reg-section-sub">Included at no extra cost when you register.</p>
+
+  <div class="bonus-grid" style="margin-bottom:52px;">
+    <div class="bonus-item"><span class="star">&#9733;</span> Launch To Win</div>
+    <div class="bonus-item"><span class="star">&#9733;</span> Foundation of Results</div>
+    <div class="bonus-item"><span class="star">&#9733;</span> Bestseller Digital Products</div>
+    <div class="bonus-item"><span class="star">&#9733;</span> Spiritual Intelligence for High Performers</div>
+    <div class="bonus-item"><span class="star">&#9733;</span> Energy &amp; State</div>
+    <div class="bonus-item"><span class="star">&#9733;</span> Organic Social Media Growth</div>
+    <div class="bonus-item"><span class="star">&#9733;</span> Monetisation</div>
+  </div>
 
   <h2 class="reg-section-title">Choose your payment option</h2>
   <p class="reg-section-sub">Both options secure your seat in the same October cohort. Select one to continue.</p>
