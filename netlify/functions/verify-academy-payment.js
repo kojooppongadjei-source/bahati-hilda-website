@@ -69,6 +69,7 @@ exports.handler = async function (event) {
     const verified = amountOk && currencyOk && refOk && statusOk;
 
     if (verified) {
+      await saveRegistration({ tx, student, tx_ref, plan });
       await sendStudentConfirmationEmail({ tx, student, tx_ref, plan });
       await sendTeamNotificationEmail({ tx, student, tx_ref, plan });
     }
@@ -91,6 +92,39 @@ exports.handler = async function (event) {
     };
   }
 };
+
+// Persists each verified registration to Netlify Blobs, so Hilda's team
+// can view registrations, payment status, and lead source from a simple
+// admin page instead of only reading through emails. Keyed by tx_ref so
+// each payment (including a student's 2nd instalment, paid separately)
+// gets its own record.
+async function saveRegistration({ tx, student, tx_ref, plan }) {
+  try {
+    const { getStore } = require("@netlify/blobs");
+    const store = getStore("academy-registrations");
+    const record = {
+      tx_ref,
+      name: student && student.name,
+      email: student && student.email,
+      phone: student && student.phone,
+      source: (student && student.source) || "Not specified",
+      plan,
+      plan_label: plan === "installment" ? "Two-Part Payment Plan (1st instalment)" : "Full Payment",
+      amount: tx.amount,
+      currency: tx.currency,
+      status: tx.status,
+      balance_owed: plan === "installment" ? 1250000 : 0,
+      balance_due_date: plan === "installment" ? "2026-10-29" : null,
+      flw_transaction_id: tx.id,
+      registered_at: new Date().toISOString(),
+    };
+    await store.setJSON(tx_ref, record);
+  } catch (err) {
+    // Never block the student's confirmation over a storage hiccup —
+    // the email notification is still sent as a fallback record.
+    console.error("Failed to save registration to Blobs:", err);
+  }
+}
 
 function getTransporter() {
   const nodemailer = require("nodemailer");
@@ -174,6 +208,7 @@ async function sendTeamNotificationEmail({ tx, student, tx_ref, plan }) {
       <tr><td><strong>Name</strong></td><td>${escapeHtml(student && student.name)}</td></tr>
       <tr><td><strong>Email</strong></td><td>${escapeHtml(student && student.email)}</td></tr>
       <tr><td><strong>Phone</strong></td><td>${escapeHtml(student && student.phone)}</td></tr>
+      <tr><td><strong>Heard about us via</strong></td><td>${escapeHtml((student && student.source) || "Not specified")}</td></tr>
       <tr><td><strong>Plan</strong></td><td>${escapeHtml(planLabel)}</td></tr>
       <tr><td><strong>Amount paid today</strong></td><td>${tx.currency} ${Number(tx.amount).toLocaleString("en-UG")}</td></tr>
       <tr><td><strong>Reference</strong></td><td>${escapeHtml(tx_ref)}</td></tr>

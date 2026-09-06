@@ -39,11 +39,11 @@
 
   .reg-form{display:grid;gap:16px;}
   .reg-form label{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);margin-bottom:6px;display:block;}
-  .reg-form input{
+  .reg-form input, .reg-form select{
     width:100%;padding:13px 14px;border:1.5px solid var(--border);border-radius:8px;
     font-size:15px;font-family:var(--sans);background:var(--white);
   }
-  .reg-form input:focus{border-color:var(--wine);outline:none;}
+  .reg-form input:focus, .reg-form select:focus{border-color:var(--wine);outline:none;}
   .reg-summary{
     background:var(--white-dim);border-radius:12px;padding:20px 22px;margin-top:8px;
     display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;
@@ -209,6 +209,19 @@
     <div>
       <label for="reg-phone">Phone Number (for Mobile Money)</label>
       <input type="tel" id="reg-phone" placeholder="e.g. 0757 117 117" required>
+    </div>
+    <div>
+      <label for="reg-source">How did you hear about us?</label>
+      <select id="reg-source" required>
+        <option value="">Select one</option>
+        <option value="WhatsApp">WhatsApp</option>
+        <option value="Instagram">Instagram</option>
+        <option value="TikTok">TikTok</option>
+        <option value="Facebook">Facebook</option>
+        <option value="YouTube">YouTube</option>
+        <option value="Referral">Referral / Word of Mouth</option>
+        <option value="Other">Other</option>
+      </select>
     </div>
 
     <div class="reg-summary">

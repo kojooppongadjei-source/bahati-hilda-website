@@ -30,6 +30,23 @@ document.addEventListener('DOMContentLoaded', function () {
   const fullRadio = document.getElementById('plan-full');
   const installmentRadio = document.getElementById('plan-installment');
 
+  // Auto-detect platform from a shared link's ?src= parameter, e.g.
+  // .../register-7-power-systems.html?src=whatsapp — falls back to
+  // letting the student pick manually if no match or no parameter.
+  const SOURCE_MAP = {
+    whatsapp: 'WhatsApp',
+    instagram: 'Instagram',
+    tiktok: 'TikTok',
+    facebook: 'Facebook',
+    youtube: 'YouTube'
+  };
+  const params = new URLSearchParams(window.location.search);
+  const srcParam = (params.get('src') || '').toLowerCase();
+  if (SOURCE_MAP[srcParam]) {
+    const sourceSelect = document.getElementById('reg-source');
+    if (sourceSelect) sourceSelect.value = SOURCE_MAP[srcParam];
+  }
+
   function selectPlan(plan) {
     selectedPlan = plan;
     fullCard.classList.toggle('selected', plan === 'full');
@@ -65,6 +82,7 @@ function payAndRegister() {
   const name = document.getElementById('reg-name').value.trim();
   const email = document.getElementById('reg-email').value.trim();
   const phone = document.getElementById('reg-phone').value.trim();
+  const source = document.getElementById('reg-source').value;
 
   if (!selectedPlan) {
     msgEl.textContent = 'Please choose a payment option above.';
@@ -73,6 +91,11 @@ function payAndRegister() {
   }
   if (!name || !email || !phone) {
     msgEl.textContent = 'Please fill in your name, email and phone number.';
+    msgEl.className = 'reg-msg error';
+    return;
+  }
+  if (!source) {
+    msgEl.textContent = 'Please let us know how you heard about us.';
     msgEl.className = 'reg-msg error';
     return;
   }
@@ -115,7 +138,7 @@ function payAndRegister() {
           expected_currency: CURRENCY,
           tx_ref: txRef,
           plan: selectedPlan,
-          student: { name: name, email: email, phone: phone }
+          student: { name: name, email: email, phone: phone, source: source }
         })
       })
         .then(function (res) { return res.json(); })
