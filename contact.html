@@ -87,30 +87,32 @@
 
     <div class="split-grid-wide">
 
-      <form class="reveal" onsubmit="event.preventDefault(); document.getElementById('form-success').style.display='block'; this.style.display='none';">
+      <form class="reveal" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" data-ajax data-success="form-success">
+        <input type="hidden" name="form-name" value="contact">
+        <p style="position:absolute;left:-9999px;"><label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
         <div class="form-row-2">
           <div class="form-field">
             <label for="fname">First Name</label>
-            <input type="text" id="fname" required>
+            <input type="text" id="fname" name="first_name" required>
           </div>
           <div class="form-field">
             <label for="lname">Last Name</label>
-            <input type="text" id="lname" required>
+            <input type="text" id="lname" name="last_name" required>
           </div>
         </div>
         <div class="form-row-2">
           <div class="form-field">
             <label for="email">Email Address</label>
-            <input type="email" id="email" required>
+            <input type="email" id="email" name="email" required>
           </div>
           <div class="form-field">
             <label for="phone">Phone / WhatsApp</label>
-            <input type="tel" id="phone" required>
+            <input type="tel" id="phone" name="phone" required>
           </div>
         </div>
         <div class="form-field">
           <label for="reason">How Can I Help?</label>
-          <select id="reason" required>
+          <select id="reason" name="reason" required>
             <option value="">Select one</option>
             <option>Life or Relationship Coaching</option>
             <option>Couple Therapy</option>
@@ -122,13 +124,14 @@
         </div>
         <div class="form-field">
           <label for="message">Your Message</label>
-          <textarea id="message" rows="5" required placeholder="Tell me a bit about what you're looking for..."></textarea>
+          <textarea id="message" name="message" rows="5" required placeholder="Tell me a bit about what you're looking for..."></textarea>
         </div>
         <button type="submit" class="btn btn-primary btn-block">Send Message</button>
-        <div id="form-success" style="display:none;margin-top:18px;padding:16px 18px;background:var(--white-dim);border-left:3px solid var(--wine);font-size:14.5px;">
-          Thank you. Your message has been noted. Hilda's team will be in touch within 24 to 48 hours.
-        </div>
+        <p class="form-error" style="display:none;margin-top:14px;color:#A12A2A;font-size:14.5px;">Your message didn't go through. Check your connection and try again, or WhatsApp +256 757 117 117.</p>
       </form>
+      <div id="form-success" style="display:none;margin-top:18px;padding:16px 18px;background:var(--white-dim);border-left:3px solid var(--wine);font-size:14.5px;">
+          Thank you. Your message has been sent, and a confirmation is on its way to your inbox. Hilda's team will be in touch within 24 to 48 hours.
+      </div>
 
       <div class="reveal">
         <div class="pillar-card" style="border-top-color:var(--gold);">
@@ -229,5 +232,6 @@
 <script src="/assets/js/main.js"></script>
 <script src="https://checkout.flutterwave.com/v3.js"></script>
 <script src="/assets/js/shop.js"></script>
+<script src="/assets/js/forms.js"></script>
 </body>
 </html>

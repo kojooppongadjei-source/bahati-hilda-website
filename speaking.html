@@ -192,12 +192,87 @@
 </section>
 
 <section class="section-dim" id="book">
-  <div class="wrap" style="max-width:720px;text-align:center;" class="reveal">
-    <div class="eyebrow" style="justify-content:center;display:flex;">Let's Talk</div>
-    <h2 class="section-title">Ready to bring Hilda to your stage?</h2>
-    <p class="lede" style="margin-top:16px;">Share your event details and Hilda's team will follow up to confirm availability, topic and format.</p>
-    <div style="margin-top:32px;">
-      <a href="/contact.html" class="btn btn-primary">Request Speaking Info</a>
+  <div class="wrap" style="max-width:820px;">
+    <div style="text-align:center;">
+      <div class="eyebrow" style="justify-content:center;display:flex;">Let's Talk</div>
+      <h2 class="section-title">Ready to bring Hilda to your stage?</h2>
+      <p class="lede" style="margin:16px auto 0;">Share your event details and Hilda's team will follow up within 48 hours to confirm availability, topic and format.</p>
+    </div>
+
+    <form name="speaking-booking" method="POST" data-netlify="true" netlify-honeypot="bot-field" data-ajax data-success="booking-success" style="margin-top:40px;background:var(--white);padding:clamp(22px,4vw,40px);border-top:3px solid var(--gold);">
+      <input type="hidden" name="form-name" value="speaking-booking">
+      <p style="position:absolute;left:-9999px;"><label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+
+      <div class="form-row-2">
+        <div class="form-field"><label for="bk-name">Your Name</label><input type="text" id="bk-name" name="name" autocomplete="name" required></div>
+        <div class="form-field"><label for="bk-org">Organisation</label><input type="text" id="bk-org" name="organisation" autocomplete="organization" required></div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-field"><label for="bk-email">Email Address</label><input type="email" id="bk-email" name="email" autocomplete="email" required></div>
+        <div class="form-field"><label for="bk-phone">Phone / WhatsApp</label><input type="tel" id="bk-phone" name="phone" autocomplete="tel" required></div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-field"><label for="bk-event">Event Name</label><input type="text" id="bk-event" name="event_name" required></div>
+        <div class="form-field"><label for="bk-date">Event Date</label><input type="date" id="bk-date" name="event_date" required></div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-field"><label for="bk-location">Location</label><input type="text" id="bk-location" name="location" placeholder="City, country, or virtual" required></div>
+        <div class="form-field"><label for="bk-format">Format</label>
+          <select id="bk-format" name="format" required>
+            <option value="">Select one</option>
+            <option>Keynote</option>
+            <option>Corporate Training</option>
+            <option>Workshop (half or full day)</option>
+            <option>Conference Panel</option>
+            <option>Faith-Based Event</option>
+            <option>Virtual / Webinar</option>
+            <option>Media Appearance</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-field"><label for="bk-topic">Topic</label>
+          <select id="bk-topic" name="topic" required>
+            <option value="">Select one</option>
+            <option>Speak With Power</option>
+            <option>Building People of Influence</option>
+            <option>Deliberately Selfish</option>
+            <option>Leadership &amp; Influence</option>
+            <option>Personal Branding</option>
+            <option>Business &amp; Wealth Building</option>
+            <option>Custom topic</option>
+          </select>
+        </div>
+        <div class="form-field"><label for="bk-audience">Expected Audience</label>
+          <select id="bk-audience" name="audience_size" required>
+            <option value="">Select one</option>
+            <option>Under 50</option>
+            <option>50 to 200</option>
+            <option>200 to 500</option>
+            <option>500 to 1,000</option>
+            <option>1,000+</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-field"><label for="bk-budget">Budget Range (optional)</label>
+        <select id="bk-budget" name="budget">
+          <option value="">Prefer to discuss</option>
+          <option>Under $500</option>
+          <option>$500 to $1,500</option>
+          <option>$1,500 to $3,000</option>
+          <option>$3,000+</option>
+        </select>
+      </div>
+      <div class="form-field"><label for="bk-details">Tell Us About Your Event</label>
+        <textarea id="bk-details" name="details" rows="5" placeholder="Your audience, what you'd like them to leave with, timings, and anything else Hilda should know."></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Send Booking Request</button>
+      <p class="form-error" style="display:none;margin-top:14px;color:#A12A2A;font-size:14.5px;">Your request didn't go through. Check your connection and try again, or email bookings@bahatihildasabiti.com.</p>
+    </form>
+
+    <div id="booking-success" style="display:none;margin-top:40px;background:var(--white);padding:clamp(22px,4vw,40px);border-top:3px solid var(--gold);text-align:center;">
+      <h3 style="font-family:var(--serif);font-size:26px;">Booking request sent.</h3>
+      <p style="margin-top:12px;color:var(--ink-soft);">Thank you. A confirmation is on its way to your inbox, and Hilda's team will follow up within 48 hours to confirm availability.</p>
     </div>
   </div>
 </section>
@@ -243,5 +318,6 @@
 <script src="/assets/js/main.js"></script>
 <script src="https://checkout.flutterwave.com/v3.js"></script>
 <script src="/assets/js/shop.js"></script>
+<script src="/assets/js/forms.js"></script>
 </body>
 </html>
