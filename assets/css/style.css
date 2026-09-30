@@ -490,3 +490,32 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:70px 0 30px;}
 /* fade-in on scroll */
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease, transform .7s ease;}
 .reveal.in{opacity:1;transform:translateY(0);}
+
+/* ============ MANAGED CONTENT (blog + testimonials) ============ */
+.post-card{display:flex;flex-direction:column;background:var(--white);border:1px solid var(--border);border-top:3px solid var(--gold);transition:transform .2s ease, box-shadow .2s ease;}
+.post-card:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(10,10,11,0.10);}
+.post-card img,.post-card-noimg{width:100%;aspect-ratio:16/10;object-fit:cover;background:var(--gold-soft);}
+.post-card-body{padding:22px 24px 26px;display:flex;flex-direction:column;flex:1;}
+.post-meta{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;font-weight:700;color:var(--wine);}
+.post-meta span{font-weight:500;color:var(--ink-soft);}
+.post-card h3{font-family:var(--serif);font-size:22px;line-height:1.25;margin:10px 0 8px;color:var(--ink);}
+.post-card p{font-size:15px;color:var(--ink-soft);line-height:1.6;}
+.post-more{margin-top:auto;padding-top:16px;font-size:14px;font-weight:700;color:var(--wine-deep);}
+
+.post-article{max-width:720px;margin:0 auto;font-size:17.5px;line-height:1.8;color:var(--ink);}
+.post-article .post-cover{width:100%;margin-bottom:36px;}
+.post-article p{margin:0 0 20px;}
+.post-article h2{font-family:var(--serif);font-size:30px;line-height:1.2;margin:40px 0 14px;}
+.post-article h3{font-family:var(--serif);font-size:23px;margin:30px 0 10px;}
+.post-article ul,.post-article ol{margin:0 0 20px 24px;}
+.post-article li{margin-bottom:8px;}
+.post-article blockquote{border-left:3px solid var(--gold);padding:4px 0 4px 22px;margin:28px 0;font-family:var(--serif);font-size:22px;font-style:italic;color:var(--ink-soft);}
+.post-article a{color:var(--wine-deep);text-decoration:underline;}
+
+.tm-grid{columns:3 300px;column-gap:24px;}
+.tm-card{break-inside:avoid;margin:0 0 24px;background:var(--white);border:1px solid var(--border);border-top:3px solid var(--gold);padding:26px 26px 22px;}
+.tm-type{font-size:12.5px;font-weight:700;color:var(--wine);margin-bottom:12px;}
+.tm-card blockquote{font-family:var(--serif);font-size:19px;line-height:1.55;color:var(--ink);margin:0 0 20px;}
+.tm-card figcaption{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--ink-soft);}
+.tm-card figcaption img{width:46px;height:46px;border-radius:50%;object-fit:cover;}
+.tm-card figcaption b{display:block;color:var(--ink);}

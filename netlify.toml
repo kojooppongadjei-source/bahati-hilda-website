@@ -5,3 +5,13 @@
 
 [functions]
   node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/insights/:slug"
+  to = "/post.html"
+  status = 200
+
+[[redirects]]
+  from = "/site-admin"
+  to = "/site-admin.html"
+  status = 200

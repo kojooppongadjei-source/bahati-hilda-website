@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Site Content | Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="/assets/css/style.css">
+<style>
+  body{background:var(--white-dim);}
+  .a-wrap{max-width:1000px;margin:0 auto;padding:36px 20px 90px;}
+  .a-top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:26px;}
+  .a-top h1{font-family:var(--serif);font-size:28px;}
+  .a-top a{font-size:14px;color:var(--wine-deep);}
+  .tabs{display:flex;gap:6px;border-bottom:1.5px solid var(--border);margin-bottom:24px;flex-wrap:wrap;}
+  .tab{background:none;border:0;padding:12px 16px;font:inherit;font-size:15px;font-weight:600;color:var(--ink-soft);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1.5px;}
+  .tab.on{color:var(--ink);border-bottom-color:var(--gold);}
+
+  .bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
+  .bar p{color:var(--ink-soft);font-size:14.5px;}
+  .b{border:0;border-radius:4px;padding:11px 18px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;}
+  .b-main{background:var(--ink);color:var(--white);}
+  .b-rose{background:var(--gold);color:var(--white);}
+  .b-plain{background:var(--white);color:var(--ink);border:1.5px solid var(--border);}
+  .b-danger{background:none;color:#A12A2A;padding:11px 6px;}
+  .b:disabled{opacity:.6;cursor:wait;}
+
+  .list{background:var(--white);border-radius:8px;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.04);}
+  .row{display:flex;align-items:center;gap:16px;padding:14px 18px;border-bottom:1px solid var(--border);}
+  .row:last-child{border-bottom:0;}
+  .row img{width:64px;height:48px;object-fit:cover;border-radius:3px;background:var(--white-dim);flex:none;}
+  .row .t{flex:1;min-width:0;}
+  .row .t b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .row .t span{font-size:13px;color:var(--ink-soft);}
+  .pill{font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+  .pill.live{background:#E4F5E9;color:#2F6B47;}
+  .pill.draft{background:#F1EEEC;color:#6B6563;}
+  .empty{padding:50px 20px;text-align:center;color:var(--ink-soft);}
+
+  .editor{background:var(--white);border-radius:8px;padding:clamp(18px,4vw,32px);box-shadow:0 4px 14px rgba(0,0,0,.04);}
+  .editor h2{font-family:var(--serif);font-size:24px;margin-bottom:20px;}
+  .hint{font-size:13px;color:var(--ink-soft);margin-top:6px;}
+  .img-pick{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .img-pick img{width:160px;height:100px;object-fit:cover;border-radius:3px;background:var(--white-dim);}
+  .img-pick img.round{width:80px;height:80px;border-radius:50%;}
+
+  .rte-tools{display:flex;gap:4px;flex-wrap:wrap;border:1.5px solid var(--border);border-bottom:0;padding:6px;background:var(--white-dim);}
+  .rte-tools button{background:var(--white);border:1px solid var(--border);border-radius:3px;padding:6px 10px;font:inherit;font-size:13px;cursor:pointer;min-width:34px;}
+  .rte{min-height:320px;border:1.5px solid var(--border);padding:16px;font-size:16px;line-height:1.7;background:var(--white);}
+  .rte:focus{outline:none;border-color:var(--wine);}
+  .rte h2{font-family:var(--serif);font-size:24px;margin:18px 0 8px;}
+  .rte h3{font-family:var(--serif);font-size:19px;margin:16px 0 6px;}
+  .rte p{margin:0 0 12px;}
+  .rte ul,.rte ol{margin:0 0 12px 22px;}
+  .rte blockquote{border-left:3px solid var(--gold);padding-left:14px;color:var(--ink-soft);font-style:italic;margin:0 0 12px;}
+  .rte a{color:var(--wine-deep);text-decoration:underline;}
+
+  .check{display:flex;align-items:center;gap:10px;font-size:15px;}
+  .check input{width:18px;height:18px;accent-color:var(--gold);}
+  .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:26px;padding-top:20px;border-top:1px solid var(--border);}
+  .actions .spacer{flex:1;}
+  .msg{font-size:14px;margin-top:12px;}
+  .msg.err{color:#A12A2A;}
+  .msg.ok{color:#2F6B47;}
+
+  #login{max-width:360px;margin:110px auto;text-align:center;}
+  #login h1{font-family:var(--serif);font-size:26px;margin-bottom:8px;}
+  #login p{color:var(--ink-soft);font-size:14.5px;margin-bottom:20px;}
+  #login input{width:100%;padding:13px 14px;border:1.5px solid var(--border);border-radius:4px;font-size:15px;margin-bottom:12px;}
+  #app{display:none;}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <h1>Site Content</h1>
+  <p>Sign in to manage blog posts and testimonials.</p>
+  <form id="login-form">
+    <input type="password" id="pw" placeholder="Admin password" autocomplete="current-password" required>
+    <button class="b b-main" style="width:100%;" type="submit">Sign in</button>
+    <p class="msg err" id="login-err"></p>
+  </form>
+</div>
+
+<div id="app" class="a-wrap">
+  <div class="a-top">
+    <h1>Site Content</h1>
+    <div style="display:flex;gap:18px;flex-wrap:wrap;">
+      <a href="/academy-admin.html">Academy registrations</a>
+      <a href="/" target="_blank" rel="noopener">View website</a>
+      <a href="#" id="logout">Sign out</a>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-type="posts">Blog posts</button>
+    <button class="tab" data-type="testimonials">Testimonials</button>
+  </div>
+
+  <div id="list-view">
+    <div class="bar">
+      <p id="list-note"></p>
+      <button class="b b-rose" id="new-btn">New post</button>
+    </div>
+    <div class="list" id="list"><div class="empty">Loading...</div></div>
+  </div>
+
+  <!-- Blog post editor -->
+  <div id="post-editor" class="editor" style="display:none;">
+    <h2 id="post-heading">New post</h2>
+    <div class="form-field"><label for="p-title">Title</label><input id="p-title" type="text"></div>
+    <div class="form-row-2">
+      <div class="form-field"><label for="p-date">Date</label><input id="p-date" type="date"></div>
+      <div class="form-field"><label for="p-cat">Topic</label>
+        <select id="p-cat">
+          <option>Leadership</option><option>Personal Branding</option><option>Business &amp; Wealth</option>
+          <option>Communication</option><option>Self-Worth</option><option>Relationships</option><option>Faith</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-field">
+      <label>Cover image</label>
+      <div class="img-pick">
+        <img id="p-img-preview" alt="" style="display:none;">
+        <label class="b b-plain" style="display:inline-block;">Choose image<input type="file" id="p-img" accept="image/*" hidden></label>
+        <button class="b b-danger" id="p-img-remove" type="button" style="display:none;">Remove</button>
+      </div>
+      <p class="hint">A wide photo works best. It's resized automatically.</p>
+    </div>
+    <div class="form-field"><label for="p-excerpt">Short summary</label>
+      <textarea id="p-excerpt" rows="2" maxlength="220"></textarea>
+      <p class="hint">One or two sentences shown on the Insights page and when the post is shared.</p>
+    </div>
+    <div class="form-field">
+      <label>Article</label>
+      <div class="rte-tools">
+        <button type="button" data-cmd="bold" title="Bold"><b>B</b></button>
+        <button type="button" data-cmd="italic" title="Italic"><i>I</i></button>
+        <button type="button" data-block="h2" title="Heading">Heading</button>
+        <button type="button" data-block="h3" title="Subheading">Subheading</button>
+        <button type="button" data-block="p" title="Normal text">Normal</button>
+        <button type="button" data-cmd="insertUnorderedList" title="Bullet list">&bull; List</button>
+        <button type="button" data-cmd="insertOrderedList" title="Numbered list">1. List</button>
+        <button type="button" data-block="blockquote" title="Quote">Quote</button>
+        <button type="button" data-link title="Link">Link</button>
+      </div>
+      <div class="rte" id="p-body" contenteditable="true"></div>
+      <p class="hint">Pasting from Word or WhatsApp keeps the text and drops the formatting. Use the buttons above to style it.</p>
+    </div>
+    <div class="actions">
+      <button class="b b-plain" data-back type="button">Back</button>
+      <button class="b b-danger" id="p-delete" type="button" style="display:none;">Delete post</button>
+      <span class="spacer"></span>
+      <button class="b b-plain" id="p-draft" type="button">Save as draft</button>
+      <button class="b b-rose" id="p-publish" type="button">Publish</button>
+    </div>
+    <p class="msg" id="p-msg"></p>
+  </div>
+
+  <!-- Testimonial editor -->
+  <div id="tm-editor" class="editor" style="display:none;">
+    <h2 id="tm-heading">New testimonial</h2>
+    <div class="form-row-2">
+      <div class="form-field"><label for="t-name">Name</label><input id="t-name" type="text"></div>
+      <div class="form-field"><label for="t-role">Who they are</label><input id="t-role" type="text" placeholder="e.g. Trailblazer, 8th Cohort"></div>
+    </div>
+    <div class="form-field"><label for="t-cat">Type</label>
+      <select id="t-cat">
+        <option>Accelerated Mentorship Academy</option><option>Coaching Client</option>
+        <option>Embellish Prayer Altar</option><option>Corporate Training</option><option>Speaking Event</option>
+      </select>
+    </div>
+    <div class="form-field"><label for="t-quote">What they said</label><textarea id="t-quote" rows="5"></textarea></div>
+    <div class="form-field">
+      <label>Photo (optional)</label>
+      <div class="img-pick">
+        <img id="t-img-preview" class="round" alt="" style="display:none;">
+        <label class="b b-plain" style="display:inline-block;">Choose photo<input type="file" id="t-img" accept="image/*" hidden></label>
+        <button class="b b-danger" id="t-img-remove" type="button" style="display:none;">Remove</button>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="b b-plain" data-back type="button">Back</button>
+      <button class="b b-danger" id="t-delete" type="button" style="display:none;">Delete</button>
+      <span class="spacer"></span>
+      <button class="b b-plain" id="t-draft" type="button">Save as draft</button>
+      <button class="b b-rose" id="t-publish" type="button">Publish</button>
+    </div>
+    <p class="msg" id="t-msg"></p>
+  </div>
+</div>
+
+<script>
+(function () {
+  var PW_KEY = 'bhs_admin_pw'; // shared with the academy registrations page
+  var API = '/.netlify/functions/content-admin';
+  var state = { type: 'posts', items: [], editing: null, pImg: '', tImg: '' };
+  var $ = function (id) { return document.getElementById(id); };
+
+  function api(payload) {
+    return fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': sessionStorage.getItem(PW_KEY) || '' },
+      body: JSON.stringify(payload)
+    }).then(function (r) {
+      return r.json().then(function (d) {
+        if (r.status === 401) { signOut(); throw new Error('Your session ended. Sign in again.'); }
+        if (!r.ok) throw new Error(d.error || 'Something went wrong.');
+        return d;
+      });
+    });
+  }
+
+  // ---------- Sign in ----------
+  function showApp() { $('login').style.display = 'none'; $('app').style.display = 'block'; loadList(); }
+  function signOut() { sessionStorage.removeItem(PW_KEY); location.reload(); }
+  $('login-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    sessionStorage.setItem(PW_KEY, $('pw').value);
+    api({ action: 'list', type: 'posts' }).then(showApp).catch(function (err) {
+      sessionStorage.removeItem(PW_KEY);
+      $('login-err').textContent = /session/.test(err.message) ? 'Incorrect password.' : err.message;
+    });
+  });
+  $('logout').addEventListener('click', function (e) { e.preventDefault(); signOut(); });
+
+  // ---------- Tabs & list ----------
+  document.querySelectorAll('.tab').forEach(function (t) {
+    t.addEventListener('click', function () {
+      document.querySelectorAll('.tab').forEach(function (x) { x.classList.toggle('on', x === t); });
+      state.type = t.getAttribute('data-type');
+      showList();
+      loadList();
+    });
+  });
+
+  function showList() {
+    $('list-view').style.display = 'block';
+    $('post-editor').style.display = 'none';
+    $('tm-editor').style.display = 'none';
+    $('new-btn').textContent = state.type === 'posts' ? 'New post' : 'New testimonial';
+  }
+
+  function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
+  function fmtDate(d) { return d ? new Date(d + (d.length === 10 ? 'T12:00:00' : '')).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : ''; }
+
+  function loadList() {
+    $('list').innerHTML = '<div class="empty">Loading...</div>';
+    api({ action: 'list', type: state.type }).then(function (d) {
+      state.items = d.items || [];
+      var live = state.items.filter(function (x) { return x.published; }).length;
+      $('list-note').textContent = state.items.length
+        ? live + ' published, ' + (state.items.length - live) + ' draft' + (state.items.length - live === 1 ? '' : 's')
+        : '';
+      if (!state.items.length) {
+        $('list').innerHTML = '<div class="empty">' + (state.type === 'posts'
+          ? 'No posts yet. Your first article will replace the "Coming Soon" cards on the Insights page.'
+          : 'No testimonials yet. Your first one will replace the "Coming Soon" message on the Testimonials page.') + '</div>';
+        return;
+      }
+      $('list').innerHTML = state.items.map(function (x) {
+        var img = x.image ? '<img src="' + esc(x.image) + '" alt="">' : '<img alt="" style="visibility:hidden">';
+        var title = state.type === 'posts' ? x.title : x.name;
+        var sub = state.type === 'posts' ? (x.category || '') + (x.date ? ', ' + fmtDate(x.date) : '') : (x.role || x.category || '');
+        return '<div class="row">' + img +
+          '<div class="t"><b>' + esc(title) + '</b><span>' + esc(sub) + '</span></div>' +
+          '<span class="pill ' + (x.published ? 'live">Published' : 'draft">Draft') + '</span>' +
+          '<button class="b b-plain" data-edit="' + esc(x.id) + '">Edit</button></div>';
+      }).join('');
+      $('list').querySelectorAll('[data-edit]').forEach(function (b) {
+        b.addEventListener('click', function () { openEditor(b.getAttribute('data-edit')); });
+      });
+    }).catch(function (err) { $('list').innerHTML = '<div class="empty">' + esc(err.message) + '</div>'; });
+  }
+
+  $('new-btn').addEventListener('click', function () { openEditor(null); });
+  document.querySelectorAll('[data-back]').forEach(function (b) { b.addEventListener('click', function () { showList(); loadList(); }); });
+
+  // ---------- Images ----------
+  function resize(file, max) {
+    return new Promise(function (resolve, reject) {
+      var img = new Image();
+      img.onload = function () {
+        var s = Math.min(1, max / Math.max(img.width, img.height));
+        var c = document.createElement('canvas');
+        c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        resolve(c.toDataURL('image/jpeg', 0.85));
+        URL.revokeObjectURL(img.src);
+      };
+      img.onerror = function () { reject(new Error("That file couldn't be read as an image.")); };
+      img.src = URL.createObjectURL(file);
+    });
+  }
+  function wireImage(prefix, max) {
+    var input = $(prefix + '-img'), prev = $(prefix + '-img-preview'), rm = $(prefix + '-img-remove'), msg = $(prefix + '-msg');
+    input.addEventListener('change', function () {
+      if (!input.files[0]) return;
+      msg.className = 'msg'; msg.textContent = 'Uploading image...';
+      resize(input.files[0], max)
+        .then(function (dataUrl) { return api({ action: 'upload', image: dataUrl }); })
+        .then(function (d) { state[prefix + 'Img'] = d.url; setPreview(prefix, d.url); msg.textContent = ''; })
+        .catch(function (err) { msg.className = 'msg err'; msg.textContent = err.message; })
+        .then(function () { input.value = ''; });
+    });
+    rm.addEventListener('click', function () { state[prefix + 'Img'] = ''; setPreview(prefix, ''); });
+  }
+  function setPreview(prefix, url) {
+    var prev = $(prefix + '-img-preview');
+    prev.src = url || ''; prev.style.display = url ? 'block' : 'none';
+    $(prefix + '-img-remove').style.display = url ? 'inline-block' : 'none';
+  }
+  wireImage('p', 1600);
+  wireImage('t', 500);
+
+  // ---------- Rich text ----------
+  var body = $('p-body');
+  document.querySelectorAll('.rte-tools button').forEach(function (b) {
+    b.addEventListener('mousedown', function (e) { e.preventDefault(); });
+    b.addEventListener('click', function () {
+      body.focus();
+      if (b.dataset.cmd) document.execCommand(b.dataset.cmd, false, null);
+      else if (b.dataset.block) document.execCommand('formatBlock', false, '<' + b.dataset.block + '>');
+      else if (b.hasAttribute('data-link')) {
+        var url = prompt('Paste the link (e.g. https://...)');
+        if (url) document.execCommand('createLink', false, /^https?:\/\//.test(url) ? url : 'https://' + url);
+      }
+    });
+  });
+  body.addEventListener('paste', function (e) {
+    e.preventDefault();
+    var text = (e.clipboardData || window.clipboardData).getData('text/plain');
+    var html = text.split(/\n{2,}/).map(function (p) { return '<p>' + esc(p).replace(/\n/g, '<br>') + '</p>'; }).join('');
+    document.execCommand('insertHTML', false, html);
+  });
+  document.execCommand('defaultParagraphSeparator', false, 'p');
+
+  var ALLOWED = { P: 1, H2: 1, H3: 1, STRONG: 1, B: 1, EM: 1, I: 1, UL: 1, OL: 1, LI: 1, BLOCKQUOTE: 1, A: 1, BR: 1 };
+  function clean(html) {
+    var doc = new DOMParser().parseFromString('<div>' + html + '</div>', 'text/html');
+    (function walk(node) {
+      Array.prototype.slice.call(node.childNodes).forEach(function (n) {
+        if (n.nodeType === 3) return;
+        if (n.nodeType !== 1) { n.remove(); return; }
+        walk(n);
+        if (n.tagName === 'DIV') { var p = doc.createElement('p'); while (n.firstChild) p.appendChild(n.firstChild); n.replaceWith(p); return; }
+        if (!ALLOWED[n.tagName]) { while (n.firstChild) n.parentNode.insertBefore(n.firstChild, n); n.remove(); return; }
+        var href = n.tagName === 'A' ? n.getAttribute('href') : null;
+        Array.prototype.slice.call(n.attributes).forEach(function (a) { n.removeAttribute(a.name); });
+        if (href && /^(https?:|mailto:|tel:|\/)/i.test(href)) n.setAttribute('href', href);
+      });
+    })(doc.body.firstChild);
+    return doc.body.firstChild.innerHTML.replace(/<p>(\s|<br>)*<\/p>/g, '').trim();
+  }
+
+  // ---------- Editors ----------
+  function openEditor(id) {
+    var item = id ? state.items.filter(function (x) { return x.id === id; })[0] : null;
+    state.editing = item;
+    $('list-view').style.display = 'none';
+    if (state.type === 'posts') {
+      $('post-editor').style.display = 'block';
+      $('post-heading').textContent = item ? 'Edit post' : 'New post';
+      $('p-title').value = item ? item.title : '';
+      $('p-date').value = item ? item.date : new Date().toISOString().slice(0, 10);
+      $('p-cat').value = item ? item.category : 'Leadership';
+      $('p-excerpt').value = item ? item.excerpt || '' : '';
+      body.innerHTML = item ? item.body || '' : '<p><br></p>';
+      state.pImg = item ? item.image || '' : '';
+      setPreview('p', state.pImg);
+      $('p-delete').style.display = item ? 'inline-block' : 'none';
+      $('p-msg').textContent = '';
+      $('p-title').focus();
+    } else {
+      $('tm-editor').style.display = 'block';
+      $('tm-heading').textContent = item ? 'Edit testimonial' : 'New testimonial';
+      $('t-name').value = item ? item.name : '';
+      $('t-role').value = item ? item.role || '' : '';
+      $('t-cat').value = item ? item.category : 'Accelerated Mentorship Academy';
+      $('t-quote').value = item ? item.quote : '';
+      state.tImg = item ? item.image || '' : '';
+      setPreview('t', state.tImg);
+      $('t-delete').style.display = item ? 'inline-block' : 'none';
+      $('t-msg').textContent = '';
+      $('t-name').focus();
+    }
+    window.scrollTo(0, 0);
+  }
+
+  function save(prefix, publish) {
+    var msg = $(prefix + '-msg');
+    var item = { id: state.editing ? state.editing.id : undefined, published: publish };
+    if (prefix === 'p') {
+      item.title = $('p-title').value.trim();
+      item.date = $('p-date').value;
+      item.category = $('p-cat').value;
+      item.excerpt = $('p-excerpt').value.trim();
+      item.image = state.pImg;
+      item.body = clean(body.innerHTML);
+      if (state.editing) item.slug = state.editing.slug;
+      if (publish && !item.body) { msg.className = 'msg err'; msg.textContent = 'Write the article before publishing.'; return; }
+    } else {
+      item.name = $('t-name').value.trim();
+      item.role = $('t-role').value.trim();
+      item.category = $('t-cat').value;
+      item.quote = $('t-quote').value.trim();
+      item.image = state.tImg;
+    }
+    var btns = document.querySelectorAll('#' + (prefix === 'p' ? 'post' : 'tm') + '-editor .actions button');
+    btns.forEach(function (b) { b.disabled = true; });
+    msg.className = 'msg'; msg.textContent = 'Saving...';
+    api({ action: 'save', type: state.type, item: item }).then(function (d) {
+      state.editing = d.item;
+      $(prefix + '-delete').style.display = 'inline-block';
+      msg.className = 'msg ok';
+      if (!publish) msg.textContent = 'Saved as a draft. It is not visible on the website.';
+      else if (prefix === 'p') msg.innerHTML = 'Published. <a href="/insights/' + encodeURIComponent(d.item.slug) + '" target="_blank" rel="noopener">View the post</a>';
+      else msg.innerHTML = 'Published. <a href="/testimonials.html" target="_blank" rel="noopener">View testimonials</a>';
+    }).catch(function (err) {
+      msg.className = 'msg err'; msg.textContent = err.message;
+    }).then(function () { btns.forEach(function (b) { b.disabled = false; }); });
+  }
+
+  function remove(prefix) {
+    if (!state.editing || !confirm('Delete this for good? This cannot be undone.')) return;
+    api({ action: 'delete', type: state.type, id: state.editing.id })
+      .then(function () { showList(); loadList(); })
+      .catch(function (err) { var m = $(prefix + '-msg'); m.className = 'msg err'; m.textContent = err.message; });
+  }
+
+  $('p-draft').addEventListener('click', function () { save('p', false); });
+  $('p-publish').addEventListener('click', function () { save('p', true); });
+  $('p-delete').addEventListener('click', function () { remove('p'); });
+  $('t-draft').addEventListener('click', function () { save('t', false); });
+  $('t-publish').addEventListener('click', function () { save('t', true); });
+  $('t-delete').addEventListener('click', function () { remove('t'); });
+
+  if (sessionStorage.getItem(PW_KEY)) showApp();
+})();
+</script>
+</body>
+</html>
