@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Join the Waitlist | Accelerated Mentorship Academy with Dr. Bahati Hilda Sabiti</title>
+<meta name="description" content="The October cohort of Package Yourself Like an Expert: The 7 Power Systems is underway. Join the waitlist to be first to hear when the next cohort opens.">
+<link rel="icon" href="/assets/images/logo-bahati-mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #000000;
+    --white: #FFFFFF;
+    --rose: #B76E79;
+    --rose-deep: #96545F;
+    --rose-light: #E8C5C1;
+    --blush: #F8EFEC;
+    --grey: #5E5A59;
+    --serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+    --sans: 'Jost', 'Helvetica Neue', Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: var(--sans);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--black);
+    background: var(--white);
+  }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--rose); outline-offset: 3px; }
+
+  /* Header */
+  .site-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding: 1.1rem clamp(1.25rem, 4vw, 3rem);
+    border-bottom: 1px solid var(--rose-light);
+  }
+  .brand { display: flex; align-items: center; gap: .6rem; text-decoration: none; }
+  .brand img { width: 38px; height: 38px; object-fit: contain; }
+  .brand span { font-family: var(--serif); font-size: 1.3rem; font-weight: 600; }
+  .brand em { font-weight: 500; color: var(--rose-deep); }
+  .header-link { font-size: .95rem; text-decoration: none; border-bottom: 1px solid var(--rose); padding-bottom: 2px; }
+
+  /* Layout */
+  .wrap {
+    max-width: 1180px; margin: 0 auto;
+    padding: clamp(2.5rem, 6vw, 5rem) clamp(1.25rem, 4vw, 3rem);
+    display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(2.5rem, 5vw, 5rem);
+    align-items: start;
+  }
+  .intro { max-width: 36rem; }
+  .ama-logo { width: 190px; margin-bottom: 2rem; }
+  h1 {
+    font-family: var(--serif); font-weight: 500;
+    font-size: clamp(2.3rem, 4.6vw, 3.6rem); line-height: 1.08; letter-spacing: -.01em;
+    margin-bottom: 1.4rem;
+  }
+  .lead { color: var(--grey); font-size: 1.1rem; margin-bottom: 2.5rem; }
+  .lead strong { color: var(--black); font-weight: 500; }
+
+  .steps { list-style: none; counter-reset: step; margin-bottom: 2.75rem; }
+  .steps li {
+    counter-increment: step;
+    display: grid; grid-template-columns: 2.75rem 1fr; gap: .9rem; align-items: baseline;
+    padding: 1rem 0; border-top: 1px solid var(--rose-light);
+  }
+  .steps li:last-child { border-bottom: 1px solid var(--rose-light); }
+  .steps li::before {
+    content: counter(step);
+    font-family: var(--serif); font-size: 1.9rem; line-height: 1; color: var(--rose);
+  }
+  .steps b { display: block; font-weight: 500; }
+  .steps span { color: var(--grey); font-size: .98rem; }
+
+  .photo { position: relative; }
+  .photo img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+  .photo figcaption { font-size: .88rem; color: var(--grey); margin-top: .6rem; }
+
+  /* Form panel */
+  .panel {
+    background: var(--blush);
+    padding: clamp(1.75rem, 3.5vw, 2.75rem);
+    border-top: 3px solid var(--rose);
+    position: sticky; top: 1.5rem;
+  }
+  .panel h2 { font-family: var(--serif); font-weight: 600; font-size: 1.9rem; line-height: 1.15; margin-bottom: .4rem; }
+  .panel > p { color: var(--grey); font-size: .98rem; margin-bottom: 1.6rem; }
+
+  .field { margin-bottom: 1.1rem; }
+  label { display: block; font-size: .92rem; font-weight: 500; margin-bottom: .35rem; }
+  .optional { font-weight: 400; color: var(--grey); }
+  input, select {
+    width: 100%; font: inherit; font-size: 1rem; color: var(--black);
+    background: var(--white); border: 1px solid #D9BDB9; border-radius: 2px;
+    padding: .75rem .85rem;
+  }
+  input:focus, select:focus { outline: none; border-color: var(--rose); box-shadow: 0 0 0 3px rgba(183, 110, 121, .2); }
+  .hidden-field { position: absolute; left: -9999px; }
+
+  .btn {
+    width: 100%; margin-top: .5rem; cursor: pointer;
+    font: inherit; font-weight: 500; font-size: 1.02rem; letter-spacing: .02em; color: var(--white);
+    border: 0; border-radius: 2px; padding: 1rem 1.25rem;
+    background: linear-gradient(110deg, var(--rose-deep) 0%, var(--rose) 40%, #D9A3A8 50%, var(--rose) 60%, var(--rose-deep) 100%);
+    background-size: 250% 100%; background-position: 100% 0;
+    transition: background-position .9s ease;
+  }
+  .btn:hover { background-position: 0 0; }
+  .btn[disabled] { opacity: .65; cursor: wait; }
+  .form-error { color: #A12A2A; font-size: .92rem; margin-top: .8rem; display: none; }
+
+  .success { display: none; }
+  .success h2 { margin-bottom: .6rem; }
+  .success p { color: var(--grey); margin-bottom: 1.2rem; }
+  .joined .waitlist-form, .joined .panel > .form-intro { display: none; }
+  .joined .success { display: block; }
+
+  .wa-link {
+    display: inline-block; text-decoration: none; font-weight: 500;
+    border: 1px solid var(--black); padding: .7rem 1.1rem; border-radius: 2px;
+  }
+  .wa-link:hover { background: var(--black); color: var(--white); }
+
+  .instalment {
+    margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid #E3CCC8;
+    font-size: .93rem; color: var(--grey);
+  }
+  .instalment a { color: var(--black); font-weight: 500; }
+
+  /* Footer */
+  .site-footer {
+    border-top: 1px solid var(--rose-light);
+    padding: 1.75rem clamp(1.25rem, 4vw, 3rem);
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: .75rem 2rem;
+    font-size: .92rem; color: var(--grey);
+  }
+  .site-footer a { text-decoration: none; }
+  .site-footer a:hover { color: var(--rose-deep); }
+
+  @media (max-width: 860px) {
+    .wrap { grid-template-columns: 1fr; }
+    .panel { position: static; }
+    .intro { max-width: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .btn { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="brand" href="/">
+    <img src="/assets/images/logo-bahati-mark.png" alt="">
+    <span>Dr. Bahati Hilda <em>Sabiti</em></span>
+  </a>
+  <a class="header-link" href="/courses">Explore the Academy</a>
+</header>
+
+<main class="wrap">
+  <section class="intro">
+    <img class="ama-logo" src="/assets/images/ama-logo-lockup.png" alt="Accelerated Mentorship Academy">
+    <h1>The October cohort has begun. Be first to hear when the next one opens.</h1>
+    <p class="lead">Registration for <strong>Package Yourself Like an Expert: The 7 Power Systems</strong> closed on 30th September. Join the waitlist and you'll get the next cohort's dates and fees before they're announced publicly.</p>
+
+    <ol class="steps">
+      <li><div><b>Join the waitlist</b><span>It takes less than a minute.</span></div></li>
+      <li><div><b>Hear the dates first</b><span>We'll message you by email and WhatsApp as soon as the next cohort is set.</span></div></li>
+      <li><div><b>Register early</b><span>Secure your seat and get ready to build your voice, brand and wealth.</span></div></li>
+    </ol>
+
+    <figure class="photo">
+      <img src="/assets/images/graduation-group.jpg" alt="Accelerated Mentorship Academy Trailblazers at their graduation ceremony" loading="lazy">
+      <figcaption>Trailblazers from a past Accelerated Mentorship Academy cohort.</figcaption>
+    </figure>
+  </section>
+
+  <aside class="panel" id="panel" aria-live="polite">
+    <div class="form-intro">
+      <h2>Join the waitlist</h2>
+      <p>For the next cohort of the Accelerated Mentorship Academy.</p>
+    </div>
+
+    <form class="waitlist-form" name="academy-waitlist" method="POST" action="/academy-waitlist?joined=1" data-netlify="true" netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="academy-waitlist">
+      <p class="hidden-field"><label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+
+      <div class="field">
+        <label for="name">Full name</label>
+        <input id="name" name="name" type="text" autocomplete="name" required>
+      </div>
+      <div class="field">
+        <label for="email">Email address</label>
+        <input id="email" name="email" type="email" autocomplete="email" required>
+      </div>
+      <div class="field">
+        <label for="phone">WhatsApp number</label>
+        <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+256 ..." required>
+      </div>
+      <div class="field">
+        <label for="focus">What do you most want help with? <span class="optional">(optional)</span></label>
+        <select id="focus" name="focus">
+          <option value="">Select one</option>
+          <option>Building my personal brand</option>
+          <option>Growing my business and income</option>
+          <option>Speaking with authority</option>
+          <option>Creating a coaching offer</option>
+          <option>Not sure yet</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="source">How did you hear about us? <span class="optional">(optional)</span></label>
+        <select id="source" name="source">
+          <option value="">Select one</option>
+          <option>WhatsApp</option>
+          <option>Instagram</option>
+          <option>TikTok</option>
+          <option>Facebook</option>
+          <option>YouTube</option>
+          <option>The Bahati Show</option>
+          <option>Referral / Word of Mouth</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <button class="btn" type="submit">Join the Waitlist</button>
+      <p class="form-error" id="form-error">Your details didn't go through. Check your connection and try again, or message us on WhatsApp.</p>
+    </form>
+
+    <div class="success">
+      <h2>You're on the waitlist.</h2>
+      <p>We'll message you as soon as the next cohort's dates are set. Want to talk before then? Reach the academy team on WhatsApp.</p>
+      <a class="wa-link" href="https://wa.me/256757117117?text=Hi%2C%20I%27ve%20just%20joined%20the%20waitlist%20for%20the%20next%20Academy%20cohort." target="_blank" rel="noopener">Message us on WhatsApp</a>
+    </div>
+
+    <p class="instalment">Registered for October on the two-part plan? Your 2nd instalment is due by 29th October. <a href="https://wa.me/256757117117?text=Hi%2C%20I%27d%20like%20to%20pay%20my%202nd%20instalment%20for%20The%207%20Power%20Systems." target="_blank" rel="noopener">Message the academy team</a> to pay.</p>
+  </aside>
+</main>
+
+<footer class="site-footer">
+  <span>&copy; 2026 Dr. Bahati Hilda Sabiti. All Rights Reserved.</span>
+  <span>
+    <a href="mailto:academy@bahatihildasabiti.com">academy@bahatihildasabiti.com</a>
+    &nbsp;&nbsp;<a href="tel:+256757117117">+256 757 117 117</a>
+  </span>
+</footer>
+
+<script>
+  (function () {
+    var panel = document.getElementById('panel');
+    var form = document.querySelector('.waitlist-form');
+    var errorMsg = document.getElementById('form-error');
+
+    // No-JS fallback lands back here with ?joined=1
+    if (new URLSearchParams(location.search).has('joined')) panel.classList.add('joined');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var btn = form.querySelector('.btn');
+      btn.disabled = true;
+      btn.textContent = 'Joining...';
+      errorMsg.style.display = 'none';
+
+      fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(new FormData(form)).toString()
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error('Status ' + res.status);
+          panel.classList.add('joined');
+          panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        })
+        .catch(function () {
+          btn.disabled = false;
+          btn.textContent = 'Join the Waitlist';
+          errorMsg.style.display = 'block';
+        });
+    });
+  })();
+</script>
+</body>
+</html>
