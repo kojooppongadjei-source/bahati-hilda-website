@@ -22,12 +22,14 @@ export const EVENT = {
   time: "11:00 AM",
   venue: "UCF Makerere",
   includes:
-    "Admission for one person to The Glory Blueprint 2027 planning experience: guided prayer, reflection, and planning for the year ahead across life, family, career, business, or ministry.",
+    "Admission for one person to The Glory Blueprint 2027 planning experience: guided prayer, reflection, and planning for the year ahead across life, family, career, business, or ministry. Includes a workbook, planning templates, a notebook and pen, lunch, drinks, and tea.",
   contactPhone: "+256 757 117 117",
 };
 
 // Same live public key the bookstore and academy pages use; override with FLW_PUBLIC_KEY if needed.
 export const FLW_PUBLIC = () => env("FLW_PUBLIC_KEY", "FLWPUBK-0ca4b5cd4a979d874b5aafe0f61a23da-X");
+// 300 seats; override with GB_CAPACITY (0 = unlimited)
+export const CAPACITY = () => parseInt(env("GB_CAPACITY", "300"), 10);
 export const PRICE = () => parseInt(env("GB_PRICE_UGX", "150000"), 10);
 export const CURRENCY = "UGX";
 export const SITE = () => env("SITE_URL", "https://bahatihildasabiti.com").replace(/\/$/, "");

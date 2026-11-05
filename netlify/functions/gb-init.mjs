@@ -1,5 +1,5 @@
 // POST /api/gb/init  { name, phone, email } -> starts a checkout
-import { json, fail, kv, PRICE, CURRENCY, SITE, EVENT, FLW_PUBLIC, newTxRef, normalizePhone, validEmail } from "../lib/gb.mjs";
+import { json, fail, kv, PRICE, CURRENCY, SITE, EVENT, FLW_PUBLIC, newTxRef, normalizePhone, validEmail , CAPACITY } from "../lib/gb.mjs";
 
 export default async (req) => {
   if (req.method !== "POST") return fail("Method not allowed", 405);
@@ -14,7 +14,7 @@ export default async (req) => {
 
   const close = process.env.GB_SALES_CLOSE; // e.g. 2026-11-28T09:00:00+03:00
   if (close && Date.now() > Date.parse(close)) return fail("Online ticket sales have closed.", 409);
-  const capacity = parseInt(process.env.GB_CAPACITY || "0", 10);
+  const capacity = CAPACITY();
   if (capacity > 0 && (await kv.count("p/")) >= capacity) return fail("This event is sold out.", 409);
 
   const amount = PRICE();

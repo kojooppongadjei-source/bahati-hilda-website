@@ -1,6 +1,6 @@
 // POST /api/gb/admin  (header x-pin = ADMIN_PASSWORD)
 //   list | reconcile | resend {code}
-import { json, fail, kv, isAdmin, issueTicket, sendTicketEmail, attendees, cleanCode } from "../lib/gb.mjs";
+import { json, fail, kv, isAdmin, issueTicket, sendTicketEmail, attendees, cleanCode , CAPACITY } from "../lib/gb.mjs";
 
 export default async (req) => {
   if (req.method !== "POST") return fail("Method not allowed", 405);
@@ -20,7 +20,7 @@ export default async (req) => {
         revenue: paid.reduce((s, r) => s + Number(r.amount), 0),
         checked_in: paid.filter((r) => r.used_at).length,
         pending: attempts.filter((r) => r.status === "pending").length,
-        capacity: parseInt(process.env.GB_CAPACITY || "0", 10) || null,
+        capacity: CAPACITY() || null,
       },
     });
   }
