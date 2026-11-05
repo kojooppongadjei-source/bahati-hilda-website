@@ -20,6 +20,9 @@
   .top{display:flex;align-items:center;justify-content:space-between;padding:20px 0}
   .top a.home{font-family:var(--display);font-size:1.15rem;color:var(--pine);text-decoration:none;letter-spacing:.02em}
 
+  .btn.big{font-size:1.25rem;padding:1.15em 2.3em;box-shadow:0 12px 28px -12px rgba(15,179,142,.75)}
+  .top-buy{font-size:1rem;padding:.85em 1.5em}
+
   /* ---------- Hero ---------- */
   .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(24px,5vw,64px);align-items:end;padding:clamp(12px,4vw,40px) 0 clamp(48px,7vw,88px)}
   .host{font-size:1rem;color:var(--sage);margin-bottom:1.1rem}
@@ -131,6 +134,10 @@
     .bar{display:flex}
     footer{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
   }
+  @media (max-width:520px){
+    .buy-row .btn.big{width:100%}
+    .top-buy{font-size:.95rem;padding:.8em 1.25em}
+  }
   @media (max-width:420px){
     .facts{grid-template-columns:1fr;gap:10px}
     .facts div{border-left:0;padding:0 0 10px;border-bottom:1.5px solid var(--line)}
@@ -141,7 +148,7 @@
 
 <header class="wrap top">
   <a class="home" href="/">Bahati Hilda Sabiti</a>
-  <button class="btn small ghost" data-buy>Buy ticket</button>
+  <button class="btn top-buy" data-buy>Buy ticket</button>
 </header>
 
 <main>
@@ -156,7 +163,7 @@
         <div><dt>Venue</dt><dd>UCF Makerere</dd></div>
       </dl>
       <div class="buy-row" id="hero-buy">
-        <button class="btn" data-buy>Buy your ticket</button>
+        <button class="btn big" data-buy>Buy your ticket</button>
         <span class="price"><b>UGX 150,000</b> per person</span>
       </div>
     </div>
@@ -207,7 +214,7 @@
           <h2>Your 2027 deserves a blueprint.</h2>
           <p class="amount">UGX 150,000</p>
           <p class="per">One ticket admits one person. Limited to 300 seats.</p>
-          <button class="btn" data-buy>Buy your ticket</button>
+          <button class="btn big" data-buy>Buy your ticket</button>
         </div>
         <div>
           <ul class="inc">
@@ -250,7 +257,7 @@
   <section class="closing">
     <div class="wrap">
       <h2>Make the decision to prepare for the year you are praying for.</h2>
-      <button class="btn" data-buy>Buy your ticket</button>
+      <button class="btn big" data-buy>Buy your ticket</button>
     </div>
   </section>
 </main>
@@ -264,7 +271,7 @@
 
 <div class="bar" id="bar" aria-hidden="true">
   <div class="p">28 Nov, UCF Makerere<b>UGX 150,000</b></div>
-  <button class="btn small" data-buy tabindex="-1">Buy ticket</button>
+  <button class="btn" data-buy tabindex="-1">Buy ticket</button>
 </div>
 
 <dialog id="checkout" aria-labelledby="co-title">
