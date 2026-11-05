@@ -353,110 +353,59 @@
 <script src="https://checkout.flutterwave.com/v3.js"></script>
 <script src="/assets/js/shop.js"></script>
 
-<!-- 7 POWER SYSTEMS ENTRANCE POPUP -->
+<!-- THE GLORY BLUEPRINT 2027 ENTRANCE POPUP (hides itself after the event) -->
 <style>
-#p7-overlay{
-  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);
-  z-index:9999;align-items:center;justify-content:center;padding:16px;
-}
-#p7-overlay.show{display:flex;}
-#p7-modal{
-  background:#fff;border-radius:16px;max-width:420px;width:100%;
-  overflow:hidden;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.3);
-  animation:p7Pop .3s ease;max-height:92vh;overflow-y:auto;
-}
-@keyframes p7Pop{from{opacity:0;transform:scale(.95);}to{opacity:1;transform:scale(1);}}
-.p7-close{
-  position:absolute;top:10px;right:10px;width:30px;height:30px;
-  border-radius:50%;background:rgba(0,0,0,0.55);color:#fff;border:none;
-  cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;
-  transition:background .2s;z-index:2;
-}
-.p7-close:hover{background:rgba(0,0,0,0.8);}
-#p7-img{width:100%;height:auto;display:block;aspect-ratio:3/4;object-fit:cover;object-position:top center;}
-.p7-logo-strip{background:var(--ink);padding:12px 24px;text-align:left;}
-.p7-logo-strip img{height:22px;width:auto;display:inline-block;}
-.p7-body{padding:22px 24px 24px;}
-.p7-eyebrow{
-  font-size:10px;font-weight:800;text-transform:uppercase;
-  letter-spacing:2px;color:var(--wine-deep);margin-bottom:8px;
-}
-.p7-title{
-  font-family:var(--serif);
-  font-size:20px;font-weight:800;color:var(--ink);
-  line-height:1.25;margin-bottom:10px;
-}
-.p7-details{
-  display:flex;flex-direction:column;gap:6px;
-  margin-bottom:16px;
-}
-.p7-detail{font-size:13px;color:#444;display:flex;align-items:center;gap:8px;}
-.p7-detail strong{color:var(--ink);}
-.p7-price{
-  background:var(--white-dim);border:1px solid var(--gold-soft);
-  border-radius:8px;padding:10px 14px;
-  font-size:13.5px;font-weight:700;color:var(--wine-deep);
-  margin-bottom:16px;text-align:center;
-}
-.p7-actions{display:flex;gap:10px;}
-.p7-cta{
-  flex:1;text-align:center;padding:12px;
-  background:var(--gold);color:var(--ink);font-weight:700;
-  font-size:13px;border-radius:7px;text-decoration:none;
-  transition:background .2s;
-}
-.p7-cta:hover{background:var(--gold-soft);}
-.p7-cta-wa{
-  flex:1;text-align:center;padding:12px;
-  background:#25D366;color:#fff;font-weight:700;
-  font-size:13px;border-radius:7px;text-decoration:none;
-  transition:background .2s;
-}
-.p7-cta-wa:hover{background:#1ea952;}
-@media(max-width:480px){
-  #p7-modal{border-radius:12px;}
-  .p7-body{padding:18px 18px 20px;}
-}
+#gb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9999;
+  align-items:center;justify-content:center;padding:16px}
+#gb-overlay.show{display:flex}
+#gb-modal{background:#0B3A2C;border-radius:16px;max-width:420px;width:100%;position:relative;overflow:hidden;
+  box-shadow:0 24px 70px rgba(0,0,0,.45);animation:gbPop .3s ease;max-height:94vh;display:flex;flex-direction:column}
+@keyframes gbPop{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.gb-close{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.6);
+  color:#fff;border:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;z-index:2}
+.gb-close:hover{background:rgba(0,0,0,.85)}
+.gb-flyer{display:block;flex:1 1 auto;min-height:0;overflow:hidden}
+.gb-flyer img{width:100%;height:100%;max-height:calc(94vh - 84px);object-fit:contain;display:block;background:#0B3A2C}
+.gb-actions{display:flex;gap:10px;padding:14px;background:#0B3A2C}
+.gb-buy,.gb-wa{flex:1;text-align:center;padding:14px 10px;border-radius:999px;font-weight:700;font-size:15px;
+  text-decoration:none;font-family:inherit;transition:background .2s}
+.gb-buy{flex:1.4;background:#0FB38E;color:#fff}
+.gb-buy:hover{background:#0A8F71}
+.gb-wa{background:rgba(255,255,255,.1);color:#fff}
+.gb-wa:hover{background:rgba(255,255,255,.18)}
 </style>
 
-<div id="p7-overlay" onclick="p7Close(event)">
-  <div id="p7-modal" onclick="event.stopPropagation()">
-    <button class="p7-close" onclick="p7Close()">&#10005;</button>
-    <img id="p7-img" src="/assets/images/7-power-systems-popup.jpg" alt="Package Yourself Like an Expert: The 7 Power Systems">
-    <div class="p7-logo-strip">
-      <img src="/assets/images/ama-logo-lockup.png" alt="Accelerated Mentorship Academy">
-    </div>
-    <div class="p7-body">
-      <div class="p7-title">Package Yourself Like an Expert: The 7 Power Systems</div>
-      <div class="p7-details">
-        <div class="p7-detail">&#128197; <strong>8 Weeks</strong> &middot; Starts 1st October</div>
-        <div class="p7-detail">&#9203; Registration deadline: <strong>30th September</strong></div>
-      </div>
-      <div class="p7-price">UGX 2,500,000 full &middot; or UGX 1,250,000 &times; 2 instalments</div>
-      <div class="p7-actions">
-        <a class="p7-cta-wa" href="https://wa.me/256757117117?text=Hi%2C%20I%27d%20like%20to%20register%20for%20Package%20Yourself%20Like%20an%20Expert%3A%20The%207%20Power%20Systems" target="_blank" rel="noopener">&#128172; WhatsApp to Register</a>
-        <a class="p7-cta" href="/register-7-power-systems.html" onclick="p7Close()">Register Now &rarr;</a>
-      </div>
+<div id="gb-overlay" onclick="gbClose(event)">
+  <div id="gb-modal" role="dialog" aria-modal="true" aria-label="The Glory Blueprint 2027" onclick="event.stopPropagation()">
+    <button class="gb-close" onclick="gbClose()" aria-label="Close">&#10005;</button>
+    <a class="gb-flyer" href="/glory" onclick="gbSeen()">
+      <img src="/assets/images/glory-blueprint-2027-flyer.jpg" width="1023" height="1280"
+        alt="The Glory Blueprint 2027 with Bahati Hilda Sabiti. Saturday 28 November 2026, 11:00 AM, UCF Makerere. Access UGX 150,000.">
+    </a>
+    <div class="gb-actions">
+      <a class="gb-buy" href="/glory" onclick="gbSeen()">Buy your ticket</a>
+      <a class="gb-wa" href="https://wa.me/256757117117?text=Hi%2C%20I%27d%20like%20to%20know%20more%20about%20The%20Glory%20Blueprint%202027" target="_blank" rel="noopener">WhatsApp us</a>
     </div>
   </div>
 </div>
 
 <script>
 (function(){
-  var P7_KEY = 'bhs_7_power_systems_popup_seen';
-  var COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours
-  var lastSeen = parseInt(localStorage.getItem(P7_KEY) || '0', 10);
-  if(Date.now() - lastSeen > COOLDOWN_MS){
-    setTimeout(function(){
-      document.getElementById('p7-overlay').classList.add('show');
-    }, 4000);
+  var KEY = 'bhs_glory_blueprint_popup_seen';
+  var COOLDOWN_MS = 24 * 60 * 60 * 1000;          // show at most once a day
+  var EVENT_OVER = Date.parse('2026-11-28T18:00:00+03:00');
+  if (Date.now() > EVENT_OVER) return;
+  var last = 0; try { last = parseInt(localStorage.getItem(KEY) || '0', 10); } catch (e) {}
+  if (Date.now() - last > COOLDOWN_MS) {
+    setTimeout(function(){ document.getElementById('gb-overlay').classList.add('show'); }, 3000);
   }
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') gbClose(); });
 })();
-
-function p7Close(e){
-  if(e && e.target !== document.getElementById('p7-overlay')) return;
-  document.getElementById('p7-overlay').classList.remove('show');
-  localStorage.setItem('bhs_7_power_systems_popup_seen', String(Date.now()));
+function gbSeen(){ try { localStorage.setItem('bhs_glory_blueprint_popup_seen', String(Date.now())); } catch (e) {} }
+function gbClose(e){
+  if (e && e.target !== document.getElementById('gb-overlay')) return;
+  document.getElementById('gb-overlay').classList.remove('show');
+  gbSeen();
 }
 </script>
 
