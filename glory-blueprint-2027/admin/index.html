@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Ticket sales | The Glory Blueprint 2027</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/glory-blueprint-2027/gb.css">
+<style>
+  body{padding-bottom:40px}
+  .wrap{width:min(1180px,100% - 32px)}
+  header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px;padding:28px 0 22px}
+  header h1{font-size:clamp(1.8rem,4vw,2.4rem)}
+  header p{margin:.3rem 0 0;color:var(--sage)}
+  .tools{display:flex;flex-wrap:wrap;gap:10px}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;margin-bottom:22px}
+  .stats > div{background:var(--paper);padding:18px 20px}
+  .stats dt{color:var(--sage);font-size:.9rem}
+  .stats dd{margin:.2rem 0 0;font-family:var(--display);font-size:clamp(1.4rem,2.6vw,2rem);line-height:1.15;white-space:nowrap}
+  .stats .bar{height:6px;background:var(--mist);border-radius:6px;margin-top:10px;overflow:hidden}
+  .stats .bar i{display:block;height:100%;background:var(--glory)}
+  .filters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+  .filters input,.filters select{font:inherit;padding:.65em .9em;border-radius:var(--r-sm);border:1.5px solid var(--line);background:#fff}
+  .filters input{flex:1;min-width:200px}
+  .tbl{overflow-x:auto;background:var(--paper);border:1px solid var(--line);border-radius:var(--r-lg)}
+  table{border-collapse:collapse;width:100%;font-size:.93rem}
+  th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+  th{color:var(--sage);font-weight:600;position:sticky;top:0;background:var(--paper)}
+  tr:last-child td{border-bottom:0}
+  .pill{font-size:.8rem;font-weight:600;padding:.25em .7em;border-radius:999px}
+  .pill.paid{background:var(--ok-bg);color:var(--glory-deep)}
+  .pill.pending{background:#FFF4DB;color:#8A5A00}
+  .pill.failed{background:var(--danger-bg);color:var(--danger)}
+  .pill.in{background:var(--pine);color:#fff}
+  .link{appearance:none;border:0;background:none;color:var(--glory-deep);font:600 .88rem var(--text);cursor:pointer;padding:0;text-decoration:underline}
+  .empty{padding:40px;text-align:center;color:var(--sage)}
+  .login{width:min(380px,100% - 32px);margin:14vh auto 0}
+  .login h1{font-size:2rem;margin-bottom:1rem}
+  @media (max-width:720px){.stats{grid-template-columns:1fr 1fr}.stats dd{white-space:normal}}
+</style>
+</head>
+<body>
+
+<section class="login" id="login">
+  <h1>Ticket sales</h1>
+  <form id="login-form">
+    <div class="alert err" id="login-err" hidden></div>
+    <div class="field"><label for="pin">Admin password</label><input id="pin" type="password" autocomplete="current-password" required></div>
+    <button class="btn" style="width:100%">Open dashboard</button>
+  </form>
+</section>
+
+<div class="wrap" id="app" hidden>
+  <header>
+    <div><h1>The Glory Blueprint 2027</h1><p id="updated">Ticket sales</p></div>
+    <div class="tools">
+      <button class="btn small ghost" id="reconcile">Check pending payments</button>
+      <button class="btn small ghost" id="refresh">Refresh</button>
+      <button class="btn small" id="csv">Download attendee list</button>
+    </div>
+  </header>
+
+  <div class="alert ok" id="msg" hidden></div>
+
+  <dl class="stats">
+    <div><dt>Tickets sold</dt><dd id="s-sold">0</dd><div class="bar" id="cap-bar" hidden><i id="cap-fill"></i></div></div>
+    <div><dt>Revenue</dt><dd id="s-rev">UGX 0</dd></div>
+    <div><dt>Checked in</dt><dd id="s-in">0</dd></div>
+    <div><dt>Awaiting payment</dt><dd id="s-pend">0</dd></div>
+  </dl>
+
+  <div class="filters">
+    <input id="q" type="search" placeholder="Search name, phone, email or code">
+    <select id="f"><option value="paid">Paid tickets</option><option value="all">All attempts</option><option value="pending">Awaiting payment</option><option value="failed">Failed</option><option value="in">Checked in</option><option value="notin">Not checked in</option></select>
+  </div>
+
+  <div class="tbl"><table>
+    <thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Ticket</th><th>Status</th><th>Paid via</th><th>Bought</th><th>Check-in</th><th></th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table></div>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  let PIN = sessionStorage.getItem("gb27_admin") || "", ROWS = [];
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const dt = iso => iso ? new Date(iso).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "";
+  const ugx = n => "UGX " + Number(n).toLocaleString("en-US");
+  // "256 757 117 117": spaces also keep Excel from turning it into a number
+  const fmtPhone = p => String(p || "").replace(/^(\d{3})(\d{3})(\d{3})(\d+)$/, "$1 $2 $3 $4");
+  const via = p => ({ mobilemoneyug: "Mobile Money", card: "Card" }[p] || p || "");
+
+  async function api(body) {
+    const res = await fetch("/api/gb/admin", { method: "POST", headers: { "content-type": "application/json", "x-pin": PIN }, body: JSON.stringify(body) });
+    if (res.status === 401) throw new Error("auth");
+    if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || "Request failed");
+    return res.json();
+  }
+
+  $("login-form").onsubmit = async e => {
+    e.preventDefault(); PIN = $("pin").value;
+    try { await load(); sessionStorage.setItem("gb27_admin", PIN); }
+    catch (_) { $("login-err").textContent = "That password isn’t recognised. Use the same one as the academy admin page."; $("login-err").hidden = false; }
+  };
+
+  async function load() {
+    const d = await api({ action: "list" });
+    ROWS = d.rows;
+    $("login").hidden = true; $("app").hidden = false;
+    const t = d.totals;
+    $("s-sold").textContent = t.capacity ? `${t.sold} / ${t.capacity}` : t.sold;
+    $("s-rev").textContent = ugx(t.revenue);
+    $("s-in").textContent = t.checked_in;
+    $("s-pend").textContent = t.pending;
+    if (t.capacity) { $("cap-bar").hidden = false; $("cap-fill").style.width = Math.min(100, t.sold / t.capacity * 100) + "%"; }
+    $("updated").textContent = "Updated " + new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+    render();
+  }
+
+  function filtered() {
+    const q = $("q").value.trim().toLowerCase(), f = $("f").value;
+    return ROWS.filter(r => {
+      if (f === "paid" && r.status !== "paid") return false;
+      if (["pending", "failed"].includes(f) && r.status !== f) return false;
+      if (f === "in" && !(r.status === "paid" && r.used_at)) return false;
+      if (f === "notin" && !(r.status === "paid" && !r.used_at)) return false;
+      return !q || [r.name, r.phone, r.email, r.code].some(v => (v || "").toLowerCase().includes(q));
+    });
+  }
+
+  function render() {
+    const list = filtered();
+    $("rows").innerHTML = list.length ? list.map(r => `<tr>
+      <td>${esc(r.name)}</td><td>${esc(fmtPhone(r.phone))}</td><td>${esc(r.email)}</td><td>${esc(r.code || "")}</td>
+      <td><span class="pill ${r.status}">${r.status === "paid" ? "Paid" : r.status === "pending" ? "Awaiting payment" : "Failed"}</span></td>
+      <td>${esc(via(r.payment_type))}</td><td>${dt(r.paid_at || r.created_at)}</td>
+      <td>${r.used_at ? `<span class="pill in">${dt(r.used_at)}</span> ${esc(r.checked_in_by || "")}` : ""}</td>
+      <td>${r.status === "paid" ? `<button class="link" data-resend="${esc(r.code)}">Resend email</button>` : ""}</td>
+    </tr>`).join("") : `<tr><td colspan="9" class="empty">No tickets match this view yet.</td></tr>`;
+  }
+
+  $("q").oninput = render; $("f").onchange = render;
+  $("refresh").onclick = () => load().catch(e => flash(e.message));
+
+  $("rows").onclick = async e => {
+    const code = e.target.dataset?.resend; if (!code) return;
+    e.target.textContent = "Sending…";
+    try { await api({ action: "resend", code }); e.target.textContent = "Sent"; }
+    catch (err) { e.target.textContent = "Failed, retry"; flash(err.message); }
+  };
+
+  $("reconcile").onclick = async e => {
+    e.target.disabled = true; e.target.textContent = "Checking…";
+    try {
+      const r = await api({ action: "reconcile" });
+      flash(`Checked ${r.checked} pending payment${r.checked === 1 ? "" : "s"} with Flutterwave: ${r.paid} confirmed and ticketed, ${r.failed} failed.`);
+      await load();
+    } catch (err) { flash(err.message); }
+    e.target.disabled = false; e.target.textContent = "Check pending payments";
+  };
+
+  function flash(m) { $("msg").textContent = m; $("msg").hidden = false; }
+
+  $("csv").onclick = () => {
+    const paid = ROWS.filter(r => r.status === "paid");
+    const head = ["Name", "Phone", "Email", "Ticket code", "Amount (UGX)", "Paid via", "Paid at", "Checked in at", "Checked in by", "Check-in method"];
+    const cell = v => { let s = String(v ?? ""); if (/^[=+\-@]/.test(s)) s = "'" + s; return `"${s.replace(/"/g, '""')}"`; };
+    const lines = [head, ...paid.map(r => [r.name, fmtPhone(r.phone), r.email, r.code, r.amount, via(r.payment_type), r.paid_at, r.used_at, r.checked_in_by, r.checkin_method])]
+      .map(row => row.map(cell).join(","));
+    const blob = new Blob(["\ufeff" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
+    const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(blob), download: `glory-blueprint-2027-attendees-${new Date().toISOString().slice(0, 10)}.csv` });
+    a.click(); URL.revokeObjectURL(a.href);
+  };
+
+  if (PIN) load().catch(() => sessionStorage.removeItem("gb27_admin"));
+})();
+</script>
+</body>
+</html>

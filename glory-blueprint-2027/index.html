@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Glory Blueprint 2027 | Bahati Hilda Sabiti</title>
+<meta name="description" content="A faith-filled planning experience with Bahati Hilda Sabiti. Saturday 28 November 2026, 11:00 AM, UCF Makerere. Tickets UGX 150,000.">
+<meta property="og:title" content="The Glory Blueprint 2027 with Bahati Hilda Sabiti">
+<meta property="og:description" content="Don’t enter 2027 hoping things will change. Prepare with purpose. Saturday 28 November, UCF Makerere.">
+<meta property="og:image" content="https://bahatihildasabiti.com/glory-blueprint-2027/og.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#F2F7F4">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/glory-blueprint-2027/gb.css">
+<style>
+  /* ---------- Top bar ---------- */
+  .top{display:flex;align-items:center;justify-content:space-between;padding:20px 0}
+  .top a.home{font-family:var(--display);font-size:1.15rem;color:var(--pine);text-decoration:none;letter-spacing:.02em}
+
+  /* ---------- Hero ---------- */
+  .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(24px,5vw,64px);align-items:end;padding:clamp(12px,4vw,40px) 0 clamp(48px,7vw,88px)}
+  .host{font-size:1rem;color:var(--sage);margin-bottom:1.1rem}
+  .title{font-size:clamp(3.9rem,10.5vw,8.6rem);line-height:.9;letter-spacing:-.01em;
+    background:linear-gradient(170deg,var(--aqua) 0%,var(--glory) 38%,var(--pine) 92%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.06em}
+  .title span{display:block}
+  .title .yr{font-size:.62em;letter-spacing:.04em;margin-top:.06em}
+  .lede{font-size:clamp(1.15rem,2vw,1.35rem);line-height:1.45;max-width:30ch;margin:1.6rem 0 2rem}
+  .facts{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;margin:0 0 2rem;padding:0}
+  .facts div{padding:0 clamp(14px,2.4vw,28px);border-left:1.5px solid var(--glory)}
+  .facts div:first-child{padding-left:0;border-left:0}
+  .facts dt{font-size:.85rem;color:var(--sage)}
+  .facts dd{margin:0;font-family:var(--display);font-size:clamp(1.15rem,2.2vw,1.55rem);line-height:1.2}
+  .buy-row{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px}
+  .price{font-size:1rem;color:var(--sage)}
+  .price b{color:var(--pine);font-size:1.15rem}
+
+  .portrait{position:relative;justify-self:end;width:min(100%,430px)}
+  .arch{border-radius:999px 999px var(--r-lg) var(--r-lg);overflow:hidden;aspect-ratio:430/620;background:var(--pine);
+    box-shadow:0 30px 60px -30px rgba(11,58,44,.55)}
+  .arch img{width:100%;height:100%;object-fit:cover;object-position:50% 20%}
+  .ppp{display:flex;justify-content:center;gap:0;font-family:var(--display);font-size:clamp(1.05rem,1.8vw,1.3rem);color:var(--glory-deep);margin:0;list-style:none;padding:16px 0 0}
+  .ppp li + li::before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--aqua);vertical-align:middle;margin:0 clamp(14px,2vw,22px);transform:translateY(-2px)}
+
+  /* ---------- Sections ---------- */
+  section{padding:clamp(56px,8vw,104px) 0;border-top:1px solid var(--line)}
+  .split{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(28px,6vw,80px)}
+  h2{font-size:clamp(2rem,4.4vw,3.1rem);max-width:16ch}
+  .prose{max-width:60ch;font-size:1.125rem}
+  .prose p:last-child{margin:0}
+
+  .for-you{list-style:none;margin:0;padding:0;display:grid;gap:0}
+  .for-you li{padding:1.05rem 0 1.05rem 2.4rem;border-bottom:1px solid var(--line);position:relative;font-size:1.125rem}
+  .for-you li:first-child{border-top:1px solid var(--line)}
+  .for-you li::before{content:"";position:absolute;left:.2rem;top:1.45rem;width:1.1rem;height:.6rem;border-left:2.5px solid var(--glory);border-bottom:2.5px solid var(--glory);transform:rotate(-45deg)}
+
+  .flow{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,40px);margin:clamp(32px,5vw,56px) 0 0;padding:0;list-style:none;counter-reset:step}
+  .flow li{counter-increment:step;border-top:2px solid var(--pine);padding-top:1.1rem}
+  .flow li::before{content:counter(step);font-family:var(--display);font-size:1rem;color:var(--glory-deep)}
+  .flow h3{font-size:1.9rem;margin:.3rem 0 .6rem}
+  .flow p{color:var(--sage);margin:0}
+  .areas{margin:clamp(36px,5vw,56px) 0 0;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .areas span:first-child{color:var(--sage);margin-right:6px}
+  .areas b{font-weight:500;padding:.45em 1em;border-radius:999px;background:var(--paper);border:1px solid var(--line)}
+
+  /* ---------- Ticket panel ---------- */
+  .ticket-panel{background:var(--pine);color:#fff;border-radius:var(--r-lg);padding:clamp(28px,5vw,56px);
+    display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,64px);position:relative;overflow:hidden}
+  .ticket-panel::after{content:"";position:absolute;right:-120px;top:-160px;width:420px;height:420px;border-radius:50%;
+    background:radial-gradient(circle,rgba(25,211,197,.35),transparent 65%);pointer-events:none}
+  .ticket-panel h2{color:#fff}
+  .amount{font-family:var(--display);font-size:clamp(2.6rem,6vw,4rem);line-height:1;margin:1.2rem 0 .3rem;color:#8FE9CF}
+  .ticket-panel .per{color:#B9D8CC;margin-bottom:2rem}
+  .inc{list-style:none;margin:0 0 1.6rem;padding:0}
+  .inc li{padding:.85rem 0;border-bottom:1px solid rgba(255,255,255,.14)}
+  .inc li:first-child{padding-top:0}
+  .ticket-panel .fine{color:#B9D8CC;font-size:.95rem;margin:0}
+
+  /* ---------- Details + FAQ ---------- */
+  .details dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:.7rem 1.6rem;font-size:1.125rem}
+  .details dt{color:var(--sage)}
+  .details dd{margin:0}
+  details{border-bottom:1px solid var(--line);padding:1.05rem 0}
+  details:first-of-type{border-top:1px solid var(--line)}
+  summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:1rem}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-family:var(--display);font-size:1.4rem;line-height:1;color:var(--glory-deep)}
+  details[open] summary::after{content:"−"}
+  details p{margin:.7rem 0 0;color:var(--sage);max-width:60ch}
+
+  .closing{text-align:center}
+  .closing h2{margin:0 auto 1.8rem;max-width:22ch}
+  footer{padding:32px 0 calc(32px + env(safe-area-inset-bottom));color:var(--sage);font-size:.9rem;border-top:1px solid var(--line)}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between}
+
+  /* ---------- Mobile buy bar ---------- */
+  .bar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);
+    border-top:1px solid var(--line);padding:12px 20px calc(12px + env(safe-area-inset-bottom));display:none;align-items:center;justify-content:space-between;gap:12px;
+    transform:translateY(110%);transition:transform .25s}
+  .bar.show{transform:none}
+  .bar .p{font-size:.85rem;color:var(--sage);line-height:1.25}
+  .bar .p b{display:block;color:var(--pine);font-size:1.05rem}
+
+  /* ---------- Checkout dialog ---------- */
+  dialog{border:0;padding:0;border-radius:var(--r-lg);width:min(460px,100% - 24px);max-height:calc(100dvh - 24px);color:var(--pine);background:var(--paper);box-shadow:0 30px 80px -20px rgba(11,58,44,.5)}
+  dialog::backdrop{background:rgba(11,58,44,.55);backdrop-filter:blur(3px)}
+  dialog[open]{animation:rise .22s ease-out}
+  @keyframes rise{from{opacity:0;transform:translateY(16px)}}
+  .co{padding:26px 24px 24px}
+  .co-head{display:flex;justify-content:space-between;align-items:start;gap:12px;margin-bottom:1.2rem}
+  .co-head h3{font-size:1.6rem}
+  .x{appearance:none;border:0;background:var(--mist);width:38px;height:38px;border-radius:50%;font-size:1.3rem;cursor:pointer;color:var(--pine);flex:none}
+  .summary{background:var(--mist);border-radius:var(--r-sm);padding:14px 16px;margin-bottom:1.3rem;font-size:.95rem}
+  .summary .row{display:flex;justify-content:space-between;gap:12px}
+  .summary .row + .row{margin-top:.35rem}
+  .summary .total{border-top:1px solid var(--line);margin-top:.7rem;padding-top:.7rem;font-weight:700;font-size:1.1rem}
+  .summary .meta{color:var(--sage);font-size:.85rem;margin-top:.15rem}
+  .pay{width:100%}
+  .methods{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:1rem 0 .3rem}
+  .methods span{font-size:.76rem;font-weight:600;padding:.35em .75em;border-radius:6px;background:var(--mist);color:var(--sage)}
+  .secure{text-align:center;font-size:.82rem;color:var(--sage);margin:0}
+
+  @media (max-width:860px){
+    .hero{grid-template-columns:1fr;align-items:start}
+    .portrait{justify-self:center;width:min(86%,360px);margin-top:8px}
+    .split,.ticket-panel{grid-template-columns:1fr}
+    .flow{grid-template-columns:1fr}
+    .bar{display:flex}
+    footer{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+  }
+  @media (max-width:420px){
+    .facts{grid-template-columns:1fr;gap:10px}
+    .facts div{border-left:0;padding:0 0 10px;border-bottom:1.5px solid var(--line)}
+  }
+</style>
+</head>
+<body>
+
+<header class="wrap top">
+  <a class="home" href="/">Bahati Hilda Sabiti</a>
+  <button class="btn small ghost" data-buy>Buy ticket</button>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <div>
+      <p class="host">Bahati Hilda Sabiti invites you to</p>
+      <h1 class="title"><span>The Glory</span><span>Blueprint</span><span class="yr">2027</span></h1>
+      <p class="lede">Don’t enter 2027 hoping things will change. Prepare with purpose.</p>
+      <dl class="facts">
+        <div><dt>Saturday</dt><dd>28 Nov 2026</dd></div>
+        <div><dt>Starts</dt><dd>11:00 AM</dd></div>
+        <div><dt>Venue</dt><dd>UCF Makerere</dd></div>
+      </dl>
+      <div class="buy-row" id="hero-buy">
+        <button class="btn" data-buy>Buy your ticket</button>
+        <span class="price"><b>UGX 150,000</b> per person</span>
+      </div>
+    </div>
+    <figure class="portrait" style="margin:0">
+      <div class="arch"><img src="/glory-blueprint-2027/hilda.jpg" alt="Bahati Hilda Sabiti" width="430" height="628"></div>
+      <ul class="ppp" aria-label="Theme"><li>Pray</li><li>Plan</li><li>Prosper</li></ul>
+    </figure>
+  </div>
+
+  <section>
+    <div class="wrap split">
+      <h2>Your next year deserves more than good intentions.</h2>
+      <div class="prose">
+        <p>Join Bahati Hilda Sabiti for The Glory Blueprint 2027, a faith-filled planning experience to help you seek God’s direction and create a clear, practical plan for the year ahead.</p>
+        <p>Take time to reflect, pray, and map out what you are believing and building in your life, family, career, business, and ministry. Leave with renewed focus, a clearer vision, and purposeful next steps for your 2027.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap split">
+      <h2>This experience is for you if</h2>
+      <ul class="for-you">
+        <li>You want to begin 2027 with clarity and direction.</li>
+        <li>You are ready to break patterns that have kept you stuck.</li>
+        <li>You have goals you want to bring before God and plan for intentionally.</li>
+        <li>You want your faith, decisions, and daily actions to work together.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>What you’ll experience</h2>
+      <ol class="flow">
+        <li><h3>Pray</h3><p>Guided prayer to quiet the noise and seek God’s direction for the year ahead.</p></li>
+        <li><h3>Reflect</h3><p>Look honestly at the year behind you: what grew, what stalled, and the patterns you are ready to leave behind.</p></li>
+        <li><h3>Plan</h3><p>Turn what you are believing for into a clear, practical blueprint with purposeful next steps for 2027.</p></li>
+      </ol>
+      <p class="areas"><span>Across every area of your life:</span><b>Life</b><b>Family</b><b>Career</b><b>Business</b><b>Ministry</b></p>
+    </div>
+  </section>
+
+  <section id="ticket">
+    <div class="wrap">
+      <div class="ticket-panel">
+        <div>
+          <h2>Your 2027 deserves a blueprint.</h2>
+          <p class="amount">UGX 150,000</p>
+          <p class="per">One ticket admits one person</p>
+          <button class="btn" data-buy>Buy your ticket</button>
+        </div>
+        <div>
+          <ul class="inc">
+            <li>Admission for one person to The Glory Blueprint 2027 planning experience</li>
+            <li>Guided prayer and reflection led by Bahati Hilda Sabiti</li>
+            <li>Planning for the year ahead across life, family, career, business, or ministry</li>
+            <li>Your ticket and QR code sent by email straight after payment</li>
+          </ul>
+          <p class="fine">Pay with MTN Mobile Money, Airtel Money, or Visa/Mastercard.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap split">
+      <div class="details">
+        <h2 style="margin-bottom:1.6rem">Event details</h2>
+        <dl>
+          <dt>Date</dt><dd>Saturday, 28 November 2026</dd>
+          <dt>Time</dt><dd>11:00 AM</dd>
+          <dt>Venue</dt><dd>UCF Makerere</dd>
+          <dt>Ticket</dt><dd>UGX 150,000 per person</dd>
+          <dt>Enquiries</dt><dd><a href="tel:+256757117117">+256 757 117 117</a></dd>
+        </dl>
+      </div>
+      <div>
+        <details><summary>How do I pay?</summary><p>Tap Buy your ticket, enter your details, then pay with MTN Mobile Money, Airtel Money, or a Visa or Mastercard card. Payments are processed securely by Flutterwave.</p></details>
+        <details><summary>When do I get my ticket?</summary><p>Straight after payment. You’ll see your ticket on screen and receive it by email with a unique QR code. You can also send it to your WhatsApp from the ticket page.</p></details>
+        <details><summary>What do I show at the entrance?</summary><p>Show the QR code on your phone or a printout. Each ticket can be checked in once. If you can’t open it, our team can find you by name or phone number.</p></details>
+        <details><summary>Can I buy a ticket for someone else?</summary><p>Yes. Enter the attendee’s name so it appears on the ticket. Buy one ticket per person.</p></details>
+        <details><summary>I paid but didn’t receive my ticket</summary><p>Check your spam folder first. If it isn’t there, call or WhatsApp +256 757 117 117 with the name and phone number you used, and we’ll resend it.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing">
+    <div class="wrap">
+      <h2>Make the decision to prepare for the year you are praying for.</h2>
+      <button class="btn" data-buy>Buy your ticket</button>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Bahati Hilda Sabiti</span>
+    <span>Secure payments by Flutterwave</span>
+  </div>
+</footer>
+
+<div class="bar" id="bar" aria-hidden="true">
+  <div class="p">28 Nov, UCF Makerere<b>UGX 150,000</b></div>
+  <button class="btn small" data-buy tabindex="-1">Buy ticket</button>
+</div>
+
+<dialog id="checkout" aria-labelledby="co-title">
+  <form class="co" id="co-form" novalidate>
+    <div class="co-head">
+      <div><h3 id="co-title">Buy your ticket</h3></div>
+      <button type="button" class="x" id="co-close" aria-label="Close">×</button>
+    </div>
+
+    <div class="summary">
+      <div class="row"><div>The Glory Blueprint 2027<div class="meta">Sat 28 Nov, 11:00 AM, UCF Makerere</div></div><span style="white-space:nowrap">1 ticket</span></div>
+      <div class="row total"><span>Total to pay</span><span>UGX 150,000</span></div>
+    </div>
+
+    <div class="alert err" id="co-err" role="alert" hidden></div>
+
+    <div class="field">
+      <label for="f-name">Full name</label>
+      <input id="f-name" name="name" autocomplete="name" required>
+      <small>As it should appear on the ticket</small>
+    </div>
+    <div class="field">
+      <label for="f-phone">Phone number</label>
+      <input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="0772 123 456" required>
+    </div>
+    <div class="field">
+      <label for="f-email">Email address</label>
+      <input id="f-email" name="email" type="email" inputmode="email" autocomplete="email" required>
+      <small>Your ticket and QR code will be sent here</small>
+    </div>
+
+    <button class="btn pay" id="co-pay" type="submit">Pay UGX 150,000</button>
+    <div class="methods"><span>MTN MoMo</span><span>Airtel Money</span><span>Visa</span><span>Mastercard</span></div>
+    <p class="secure">Secured by Flutterwave. You’ll confirm the payment on the next screen.</p>
+  </form>
+</dialog>
+
+<script src="https://checkout.flutterwave.com/v3.js" defer></script>
+<script>
+(() => {
+  const dlg = document.getElementById("checkout");
+  const form = document.getElementById("co-form");
+  const err = document.getElementById("co-err");
+  const pay = document.getElementById("co-pay");
+  const bar = document.getElementById("bar");
+
+  const open = () => { err.hidden = true; dlg.showModal(); setTimeout(() => form.name.focus(), 50); };
+  document.querySelectorAll("[data-buy]").forEach(b => b.addEventListener("click", open));
+  document.getElementById("co-close").onclick = () => dlg.close();
+  dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+  if (location.hash === "#buy") open();
+
+  // Mobile buy bar appears once the hero's buy button scrolls away
+  new IntersectionObserver(([e]) => {
+    bar.classList.toggle("show", !e.isIntersecting);
+    bar.setAttribute("aria-hidden", e.isIntersecting);
+    bar.querySelector("button").tabIndex = e.isIntersecting ? -1 : 0;
+  }).observe(document.getElementById("hero-buy"));
+
+  const showErr = m => { err.textContent = m; err.hidden = false; };
+  const busy = (on, label) => { pay.disabled = on; pay.textContent = label || "Pay UGX 150,000"; };
+
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    err.hidden = true;
+    const data = { name: form.name.value.trim(), phone: form.phone.value.trim(), email: form.email.value.trim() };
+    if (data.name.length < 3) return showErr("Enter your full name.");
+    if (data.phone.replace(/\D/g, "").length < 9) return showErr("Enter a valid phone number.");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(data.email)) return showErr("Enter a valid email address. Your ticket will be sent there.");
+    if (typeof FlutterwaveCheckout !== "function") return showErr("The payment window didn’t load. Check your connection and try again.");
+
+    busy(true, "Preparing payment…");
+    try {
+      const res = await fetch("/api/gb/init", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(data) });
+      const s = await res.json();
+      if (!res.ok) { busy(false); return showErr(s.error || "Something went wrong. Try again."); }
+      try { localStorage.setItem("gb27_last_ref", s.tx_ref); } catch (_) {}
+      dlg.close();
+      FlutterwaveCheckout({
+        public_key: s.public_key,
+        tx_ref: s.tx_ref,
+        amount: s.amount,
+        currency: s.currency,
+        payment_options: "mobilemoneyuganda, card",
+        redirect_url: s.redirect_url,
+        customer: s.customer,
+        customizations: {
+          title: s.title,
+          description: "1 ticket, Saturday 28 November 2026, UCF Makerere",
+          logo: location.origin + "/glory-blueprint-2027/hilda.jpg"
+        },
+        // If the buyer closes the window after approving MoMo, check before giving up
+        onclose: async () => {
+          busy(true, "Checking payment…");
+          try {
+            const v = await (await fetch("/api/gb/verify", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ tx_ref: s.tx_ref }) })).json();
+            if (v.state === "paid") return location.href = "/glory-blueprint-2027/ticket/?t=" + v.code;
+            if (v.state === "pending") return location.href = s.redirect_url; // MoMo prompt still awaiting approval
+          } catch (_) {}
+          busy(false);
+        }
+      });
+    } catch (_) {
+      busy(false);
+      showErr("Couldn’t reach the server. Check your connection and try again.");
+    }
+  });
+})();
+</script>
+</body>
+</html>

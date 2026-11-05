@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Your ticket | The Glory Blueprint 2027</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/glory-blueprint-2027/gb.css">
+<style>
+  body{min-height:100dvh;display:grid;place-items:start center;padding:24px 16px calc(32px + env(safe-area-inset-bottom))}
+  .card{width:min(440px,100%);background:var(--paper);border-radius:var(--r-lg);overflow:hidden;box-shadow:0 24px 60px -30px rgba(11,58,44,.45)}
+  .head{background:var(--pine);color:#fff;padding:24px 24px 22px;position:relative;overflow:hidden}
+  .head::after{content:"";position:absolute;right:-90px;top:-120px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(25,211,197,.35),transparent 65%)}
+  .head p{margin:0;color:#8FE9CF;font-size:.9rem}
+  .head h1{font-size:1.9rem;margin-top:.3rem}
+  .body{padding:24px}
+  .qr{display:grid;place-items:center;text-align:center;padding:4px 0 18px;border-bottom:2px dashed var(--line);margin:0 -24px 18px;position:relative}
+  .qr img{width:min(260px,72vw);height:auto;image-rendering:pixelated}
+  .qr code{font:600 1.15rem/1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.12em;margin-top:6px}
+  dl{display:grid;grid-template-columns:auto 1fr;gap:.55rem 1.2rem;margin:0 0 1.2rem}
+  dt{color:var(--sage)} dd{margin:0}
+  .actions{display:grid;gap:10px}
+  .used{background:var(--danger-bg);color:var(--danger);font-weight:600;text-align:center;padding:.7em;border-radius:var(--r-sm);margin-bottom:14px}
+  .state{text-align:center;padding:12px 0 4px}
+  .state h2{font-size:1.6rem;margin-bottom:.6rem}
+  .state p{color:var(--sage)}
+  .spin{width:44px;height:44px;border-radius:50%;border:4px solid var(--line);border-top-color:var(--glory);margin:6px auto 18px;animation:sp 1s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .note{font-size:.88rem;color:var(--sage);text-align:center;margin:1rem 0 0}
+  @media print{body{background:#fff}.actions,.note{display:none}.card{box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="head">
+    <p>Bahati Hilda Sabiti presents</p>
+    <h1>The Glory Blueprint 2027</h1>
+  </div>
+  <div class="body" id="view">
+    <div class="state"><div class="spin"></div><h2>Loading your ticket</h2></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const view = document.getElementById("view");
+  const qs = new URLSearchParams(location.search);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const EVENT_URL = "/glory-blueprint-2027/";
+  const CONTACT = "+256 757 117 117";
+
+  const state = (title, text, extra = "", spinning = false) =>
+    view.innerHTML = `<div class="state">${spinning ? '<div class="spin"></div>' : ""}<h2>${title}</h2><p>${text}</p>${extra}</div>`;
+
+  async function showTicket(code) {
+    const res = await fetch("/api/gb/ticket?t=" + encodeURIComponent(code));
+    if (!res.ok) return state("Ticket not found", `Check the link in your email, or call ${CONTACT}.`);
+    const t = await res.json();
+    const link = location.origin + "/glory-blueprint-2027/ticket/?t=" + t.code;
+    const wa = "https://wa.me/?text=" + encodeURIComponent(
+      `My ticket for The Glory Blueprint 2027\n${t.event.date}, ${t.event.time}, ${t.event.venue}\nTicket ${t.code}\n${link}`);
+    view.innerHTML = `
+      ${t.used_at ? `<div class="used">Checked in ${new Date(t.used_at).toLocaleString("en-GB",{dateStyle:"medium",timeStyle:"short"})}</div>` : ""}
+      <div class="qr"><img src="${t.qr}" alt="Ticket QR code"><code>${esc(t.code)}</code></div>
+      <dl>
+        <dt>Name</dt><dd>${esc(t.name)}</dd>
+        <dt>Date</dt><dd>${esc(t.event.date)}</dd>
+        <dt>Time</dt><dd>${esc(t.event.time)}</dd>
+        <dt>Venue</dt><dd>${esc(t.event.venue)}</dd>
+        <dt>Admits</dt><dd>One person</dd>
+      </dl>
+      <div class="actions">
+        <a class="btn" href="${wa}" target="_blank" rel="noopener">Send to my WhatsApp</a>
+        <a class="btn ghost" href="${t.qr}" download="${esc(t.code)}.png">Save QR image</a>
+      </div>
+      <p class="note">A copy was emailed to ${esc(t.email)}. Show this QR code at the entrance.</p>`;
+    document.title = `Ticket ${t.code} | The Glory Blueprint 2027`;
+  }
+
+  async function verify(ref) {
+    const cancelled = qs.get("status") === "cancelled";
+    const started = Date.now();
+    let notStartedChecks = 0;
+    state("Confirming your payment", "If you’re paying with Mobile Money, approve the prompt on your phone. This page updates on its own.", "", true);
+
+    while (Date.now() - started < 5 * 60 * 1000) {
+      let v = {};
+      try {
+        v = await (await fetch("/api/gb/verify", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ tx_ref: ref }) })).json();
+      } catch (_) {}
+      if (v.state === "paid") {
+        history.replaceState(null, "", "?t=" + v.code);
+        try { localStorage.removeItem("gb27_last_ref"); } catch (_) {}
+        return showTicket(v.code);
+      }
+      if (v.state === "failed")
+        return state("Payment didn’t go through", "You haven’t been charged for a ticket. You can try again with the same or a different payment method.",
+          `<a class="btn" href="${EVENT_URL}#buy">Try again</a>`);
+      if (v.state === "not_started" && (cancelled || ++notStartedChecks >= 4))
+        return state("Payment not completed", "No payment was made. Your ticket is waiting for you whenever you’re ready.",
+          `<a class="btn" href="${EVENT_URL}#buy">Buy your ticket</a>`);
+      await new Promise(r => setTimeout(r, 4000));
+    }
+    state("Still waiting for confirmation", `If money left your account, your ticket will be emailed as soon as the payment confirms. Need help? Call ${CONTACT}.`,
+      `<button class="btn ghost" onclick="location.reload()">Check again</button>`);
+  }
+
+  const code = qs.get("t"), ref = qs.get("ref") || qs.get("tx_ref");
+  if (code) showTicket(code);
+  else if (ref) verify(ref);
+  else state("No ticket here yet", "Your ticket link is in your confirmation email.", `<a class="btn" href="${EVENT_URL}">Go to the event page</a>`);
+})();
+</script>
+</body>
+</html>

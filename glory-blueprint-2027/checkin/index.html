@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0B3A2C">
+<title>Check-in | The Glory Blueprint 2027</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/glory-blueprint-2027/gb.css">
+<style>
+  body{min-height:100dvh;padding-bottom:env(safe-area-inset-bottom)}
+  .top{background:var(--pine);color:#fff;padding:calc(14px + env(safe-area-inset-top)) 16px 14px;display:flex;justify-content:space-between;align-items:center;gap:12px;position:sticky;top:0;z-index:5}
+  .top h1{font-size:1.2rem}
+  .top .who{font-size:.85rem;color:#B9D8CC}
+  .count{text-align:right;font-size:.85rem;color:#B9D8CC;line-height:1.2}
+  .count b{display:block;color:#fff;font-size:1.25rem;font-family:var(--display);font-weight:400}
+  main{width:min(560px,100%);margin:0 auto;padding:16px}
+  .tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--paper);border-radius:999px;padding:4px;margin-bottom:16px;border:1px solid var(--line)}
+  .tabs button{appearance:none;border:0;background:none;font:600 1rem var(--text);padding:.7em;border-radius:999px;color:var(--sage);cursor:pointer}
+  .tabs button[aria-selected=true]{background:var(--pine);color:#fff}
+  #reader{border-radius:var(--r-lg);overflow:hidden;background:#000;aspect-ratio:1;width:100%}
+  #reader video{object-fit:cover}
+  .result{margin-top:16px;border-radius:var(--r-lg);padding:22px 20px;text-align:center}
+  .result h2{font-size:2rem;margin-bottom:.3rem}
+  .result p{margin:0;font-size:1.05rem}
+  .result.admitted{background:#0FB38E;color:#fff}
+  .result.already_used{background:#B42318;color:#fff}
+  .result.invalid{background:#B42318;color:#fff}
+  .result.idle{background:var(--paper);color:var(--sage);border:1px dashed var(--line)}
+  .flash{animation:fl .35s ease-out}
+  @keyframes fl{from{transform:scale(.96);opacity:.5}}
+  .search input{font:inherit;width:100%;padding:.9em 1em;border-radius:var(--r-sm);border:1.5px solid var(--line);font-size:1.05rem}
+  .list{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:10px}
+  .list li{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-sm);padding:14px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .list .n{font-weight:600}
+  .list .m{color:var(--sage);font-size:.88rem}
+  .tag{font-size:.82rem;font-weight:600;color:var(--danger);text-align:right;max-width:9rem}
+  .login{width:min(380px,100%);margin:12vh auto 0;padding:0 16px}
+  .login h1{font-size:2rem;margin-bottom:.4rem}
+  .login p{color:var(--sage)}
+  .pin{letter-spacing:.3em;font-size:1.4rem!important;text-align:center}
+</style>
+</head>
+<body>
+
+<section class="login" id="login">
+  <h1>Door check-in</h1>
+  <p>The Glory Blueprint 2027. Enter your staff PIN to start scanning tickets.</p>
+  <form id="login-form">
+    <div class="alert err" id="login-err" hidden></div>
+    <div class="field"><label for="pin">Staff PIN</label><input id="pin" class="pin" type="password" inputmode="numeric" autocomplete="off" required></div>
+    <button class="btn" style="width:100%">Start check-in</button>
+  </form>
+</section>
+
+<div id="app" hidden>
+  <header class="top">
+    <div><h1>Check-in</h1><div class="who" id="who"></div></div>
+    <div class="count"><b id="cnt">0 / 0</b>checked in</div>
+  </header>
+  <main>
+    <div class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-tab="scan">Scan QR</button>
+      <button role="tab" aria-selected="false" data-tab="find">Find by name</button>
+    </div>
+
+    <div id="tab-scan">
+      <div id="reader"></div>
+      <div class="result idle" id="result"><p>Point the camera at a ticket QR code</p></div>
+    </div>
+
+    <div id="tab-find" class="search" hidden>
+      <input id="q" type="search" placeholder="Name, phone or ticket code" autocomplete="off">
+      <ul class="list" id="list"></ul>
+    </div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  let PIN = sessionStorage.getItem("gb27_pin") || "";
+  let scanner, lastCode = "", lastAt = 0, busy = false;
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const time = iso => new Date(iso).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+
+  async function api(body) {
+    const res = await fetch("/api/gb/checkin", { method: "POST", headers: { "content-type": "application/json", "x-pin": PIN }, body: JSON.stringify(body) });
+    if (res.status === 401) { sessionStorage.removeItem("gb27_pin"); location.reload(); throw new Error("auth"); }
+    return res.json();
+  }
+
+  // ---- Login ----
+  $("login-form").onsubmit = async e => {
+    e.preventDefault();
+    PIN = $("pin").value.trim();
+    const res = await fetch("/api/gb/checkin", { method: "POST", headers: { "content-type": "application/json", "x-pin": PIN }, body: '{"action":"login"}' });
+    if (!res.ok) { $("login-err").textContent = "That PIN isn’t recognised. Check it and try again."; $("login-err").hidden = false; return; }
+    sessionStorage.setItem("gb27_pin", PIN);
+    start((await res.json()).staff);
+  };
+
+  async function start(staff) {
+    $("login").hidden = true; $("app").hidden = false;
+    $("who").textContent = "Signed in as " + staff;
+    refreshCount(); setInterval(refreshCount, 20000);
+    startScanner();
+  }
+
+  async function refreshCount() {
+    try { const s = await api({ action: "stats" }); $("cnt").textContent = `${s.checked_in} / ${s.sold}`; } catch (_) {}
+  }
+
+  // ---- Result display ----
+  function show(r) {
+    const el = $("result");
+    el.className = "result " + r.result;
+    const t = r.ticket || {};
+    if (r.result === "admitted") {
+      el.innerHTML = `<h2>Welcome</h2><p><b>${esc(t.name)}</b></p><p>${esc(t.code)}</p>`;
+      navigator.vibrate?.(120);
+    } else if (r.result === "already_used") {
+      el.innerHTML = `<h2>Already checked in</h2><p><b>${esc(t.name)}</b></p><p>at ${time(t.used_at)} by ${esc(t.checked_in_by)}</p>`;
+      navigator.vibrate?.([80, 60, 80, 60, 80]);
+    } else {
+      el.innerHTML = `<h2>Not a valid ticket</h2><p>Ask for their name or phone and use Find by name.</p>`;
+      navigator.vibrate?.([200, 80, 200]);
+    }
+    el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash");
+    refreshCount();
+  }
+
+  // ---- Scanner ----
+  function startScanner() {
+    scanner = new Html5Qrcode("reader");
+    scanner.start({ facingMode: "environment" }, { fps: 10, qrbox: (w, h) => { const s = Math.floor(Math.min(w, h) * 0.7); return { width: s, height: s }; } },
+      async text => {
+        const now = Date.now();
+        if (busy || (text === lastCode && now - lastAt < 4000)) return; // ignore the same code held in front of the camera
+        lastCode = text; lastAt = now; busy = true;
+        try { show(await api({ action: "scan", code: text })); }
+        catch (_) { $("result").className = "result invalid"; $("result").innerHTML = "<h2>No connection</h2><p>Check the internet and scan again.</p>"; }
+        finally { busy = false; }
+      }, () => {}
+    ).catch(() => {
+      $("reader").outerHTML = `<div class="alert err">Camera unavailable. Allow camera access in your browser settings, or use Find by name.</div>`;
+    });
+  }
+
+  // ---- Tabs ----
+  document.querySelectorAll("[data-tab]").forEach(b => b.onclick = () => {
+    document.querySelectorAll("[data-tab]").forEach(x => x.setAttribute("aria-selected", x === b));
+    const scan = b.dataset.tab === "scan";
+    $("tab-scan").hidden = !scan; $("tab-find").hidden = scan;
+    try { scan ? scanner?.resume() : scanner?.pause(true); } catch (_) {}
+    if (!scan) $("q").focus();
+  });
+
+  // ---- Manual lookup ----
+  let timer;
+  $("q").oninput = () => { clearTimeout(timer); timer = setTimeout(search, 300); };
+  async function search() {
+    const q = $("q").value.trim();
+    if (q.length < 2) { $("list").innerHTML = ""; return; }
+    const { results } = await api({ action: "search", q });
+    $("list").innerHTML = results.length ? results.map(t => `
+      <li><div><div class="n">${esc(t.name)}</div><div class="m">${esc(t.phone)} &nbsp; ${esc(t.code)}</div></div>
+      ${t.used_at ? `<span class="tag">Checked in ${time(t.used_at)} by ${esc(t.checked_in_by)}</span>`
+                  : `<button class="btn small" data-code="${esc(t.code)}">Check in</button>`}</li>`).join("")
+      : `<li><span class="m">No paid ticket matches “${esc(q)}”. Try their phone number or another spelling.</span></li>`;
+  }
+  $("list").onclick = async e => {
+    const code = e.target.dataset?.code; if (!code) return;
+    e.target.disabled = true; e.target.textContent = "…";
+    const r = await api({ action: "checkin", code });
+    alert(r.result === "admitted" ? `Welcome, ${r.ticket.name}. Checked in.` : `${r.ticket?.name || "This ticket"} was already checked in.`);
+    search(); refreshCount();
+  };
+
+  if (PIN) api({ action: "login" }).then(r => start(r.staff)).catch(() => {});
+})();
+</script>
+</body>
+</html>
