@@ -39,6 +39,20 @@
   .empty{padding:40px;text-align:center;color:var(--sage)}
   .login{width:min(380px,100% - 32px);margin:14vh auto 0}
   .login h1{font-size:2rem;margin-bottom:1rem}
+  dialog{border:0;padding:0;border-radius:var(--r-lg);width:min(460px,100% - 24px);color:var(--pine);box-shadow:0 30px 80px -20px rgba(11,58,44,.5)}
+  dialog::backdrop{background:rgba(11,58,44,.5)}
+  .dlg{padding:24px}
+  .dlg h2{font-size:1.6rem;margin-bottom:.4rem}
+  .dlg > p{color:var(--sage);font-size:.95rem}
+  .seg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem}
+  .seg label{border:1.5px solid var(--line);border-radius:var(--r-sm);padding:.7em;text-align:center;cursor:pointer;font-weight:600}
+  .seg input{position:absolute;opacity:0}
+  .seg input:checked + span{color:var(--glory-deep)}
+  .seg label:has(input:checked){border-color:var(--glory);background:var(--ok-bg)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .done code{display:block;font:600 1.3rem ui-monospace,Menlo,monospace;letter-spacing:.1em;margin:.4rem 0 1rem}
+  .acts{display:grid;gap:10px}
+  .wa{margin-left:12px}
   @media (max-width:720px){.stats{grid-template-columns:1fr 1fr}.stats dd{white-space:normal}}
 </style>
 </head>
@@ -57,6 +71,7 @@
   <header>
     <div><h1>The Glory Blueprint 2027</h1><p id="updated">Ticket sales</p></div>
     <div class="tools">
+      <button class="btn small ghost" id="add-open">Add MoMo payment</button>
       <button class="btn small ghost" id="reconcile">Check pending payments</button>
       <button class="btn small ghost" id="refresh">Refresh</button>
       <button class="btn small" id="csv">Download attendee list</button>
@@ -83,6 +98,27 @@
   </table></div>
 </div>
 
+<dialog id="add">
+  <form class="dlg" id="add-form" novalidate>
+    <h2>Add MoMo payment</h2>
+    <p>For someone who paid with the merchant code or in cash. Check the money has arrived first, then issue their ticket here.</p>
+    <div class="alert err" id="add-err" hidden></div>
+    <div class="seg">
+      <label><input type="radio" name="method" value="momo_merchant" checked><span>MoMo merchant</span></label>
+      <label><input type="radio" name="method" value="cash"><span>Cash</span></label>
+    </div>
+    <div class="field" id="ref-field"><label for="a-ref">MoMo transaction ID</label><input id="a-ref" name="reference" autocomplete="off"><small>From the payment SMS. Stops the same payment getting two tickets.</small></div>
+    <div class="field"><label for="a-name">Full name</label><input id="a-name" name="name" required></div>
+    <div class="row2">
+      <div class="field"><label for="a-phone">Phone</label><input id="a-phone" name="phone" type="tel" inputmode="tel" required></div>
+      <div class="field"><label for="a-amt">Amount (UGX)</label><input id="a-amt" name="amount" inputmode="numeric" value="150000"></div>
+    </div>
+    <div class="field"><label for="a-email">Email (optional)</label><input id="a-email" name="email" type="email"><small>If given, the ticket is emailed. Otherwise send it on WhatsApp.</small></div>
+    <div class="acts"><button class="btn" id="add-go">Issue ticket</button><button type="button" class="btn ghost" id="add-cancel">Cancel</button></div>
+  </form>
+  <div class="dlg done" id="add-done" hidden></div>
+</dialog>
+
 <script>
 (() => {
   const $ = id => document.getElementById(id);
@@ -92,7 +128,10 @@
   const ugx = n => "UGX " + Number(n).toLocaleString("en-US");
   // "256 757 117 117": spaces also keep Excel from turning it into a number
   const fmtPhone = p => String(p || "").replace(/^(\d{3})(\d{3})(\d{3})(\d+)$/, "$1 $2 $3 $4");
-  const via = p => ({ mobilemoneyug: "Mobile Money", card: "Card" }[p] || p || "");
+  const via = p => ({ mobilemoneyug: "Mobile Money", card: "Card", momo_merchant: "MoMo merchant", cash: "Cash" }[p] || p || "");
+  const ticketLink = code => `${location.origin}/glory-blueprint-2027/ticket/?t=${code}`;
+  const waLink = (phone, name, code) => `https://wa.me/${phone}?text=` + encodeURIComponent(
+    `Hello ${(name || "").split(" ")[0]}, here is your ticket for The Glory Blueprint 2027.\nSaturday 28 November 2026, 11:00 AM, UCF Makerere.\nTicket ${code}\nShow this QR code at the entrance: ${ticketLink(code)}`);
 
   async function api(body) {
     const res = await fetch("/api/gb/admin", { method: "POST", headers: { "content-type": "application/json", "x-pin": PIN }, body: JSON.stringify(body) });
@@ -139,7 +178,7 @@
       <td><span class="pill ${r.status}">${r.status === "paid" ? "Paid" : r.status === "pending" ? "Awaiting payment" : "Failed"}</span></td>
       <td>${esc(via(r.payment_type))}</td><td>${dt(r.paid_at || r.created_at)}</td>
       <td>${r.used_at ? `<span class="pill in">${dt(r.used_at)}</span> ${esc(r.checked_in_by || "")}` : ""}</td>
-      <td>${r.status === "paid" ? `<button class="link" data-resend="${esc(r.code)}">Resend email</button>` : ""}</td>
+      <td>${r.status === "paid" ? `${r.email ? `<button class="link" data-resend="${esc(r.code)}">Resend email</button>` : ""}<a class="link wa" href="${waLink(r.phone, r.name, r.code)}" target="_blank" rel="noopener">WhatsApp</a>` : ""}</td>
     </tr>`).join("") : `<tr><td colspan="9" class="empty">No tickets match this view yet.</td></tr>`;
   }
 
@@ -161,6 +200,29 @@
       await load();
     } catch (err) { flash(err.message); }
     e.target.disabled = false; e.target.textContent = "Check pending payments";
+  };
+
+  // ---- Add MoMo / cash payment ----
+  const add = $("add"), af = $("add-form"), aerr = $("add-err");
+  $("add-open").onclick = () => { af.reset(); af.hidden = false; $("add-done").hidden = true; aerr.hidden = true; $("ref-field").hidden = false; add.showModal(); };
+  $("add-cancel").onclick = () => add.close();
+  af.querySelectorAll("[name=method]").forEach(r => r.onchange = () => $("ref-field").hidden = af.method.value === "cash");
+  af.onsubmit = async e => {
+    e.preventDefault(); aerr.hidden = true; $("add-go").disabled = true;
+    const data = Object.fromEntries(new FormData(af));
+    try {
+      const r = await api({ action: "issue", ...data });
+      af.hidden = true;
+      const phone = (data.phone || "").replace(/\D/g, "").replace(/^0/, "256");
+      $("add-done").hidden = false;
+      $("add-done").innerHTML = `<h2>Ticket issued</h2><p>${esc(data.name)}</p><code>${esc(r.code)}</code>
+        <p>${r.emailed ? "Emailed to " + esc(data.email) + "." : data.email ? "The email didn’t send. Use WhatsApp instead." : "Send it to them on WhatsApp now."}</p>
+        <div class="acts"><a class="btn" href="${waLink(phone, data.name, r.code)}" target="_blank" rel="noopener">Send on WhatsApp</a>
+        <button class="btn ghost" id="add-close">Done</button></div>`;
+      $("add-close").onclick = () => add.close();
+      load();
+    } catch (err) { aerr.textContent = err.message; aerr.hidden = false; }
+    $("add-go").disabled = false;
   };
 
   function flash(m) { $("msg").textContent = m; $("msg").hidden = false; }

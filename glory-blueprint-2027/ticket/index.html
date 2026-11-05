@@ -76,7 +76,7 @@
         <a class="btn" href="${wa}" target="_blank" rel="noopener">Send to my WhatsApp</a>
         <a class="btn ghost" href="${t.qr}" download="${esc(t.code)}.png">Save QR image</a>
       </div>
-      <p class="note">A copy was emailed to ${esc(t.email)}. Show this QR code at the entrance.</p>`;
+      <p class="note">${t.email ? `A copy was emailed to ${esc(t.email)}. ` : ""}Show this QR code at the entrance.</p>`;
     document.title = `Ticket ${t.code} | The Glory Blueprint 2027`;
   }
 

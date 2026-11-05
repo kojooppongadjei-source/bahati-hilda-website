@@ -7,10 +7,10 @@ export default async (req) => {
   const t = await kv.get(`p/${code}`);
   if (!t) return fail("Ticket not found.", 404);
   const used = await kv.get(`u/${code}`);
-  const [u, d] = t.email.split("@");
+  const [u, d] = (t.email || "").split("@");
   return json({
     name: t.name,
-    email: `${u.slice(0, 2)}${"•".repeat(Math.max(1, u.length - 2))}@${d}`,
+    email: d ? `${u.slice(0, 2)}${"•".repeat(Math.max(1, u.length - 2))}@${d}` : null,
     code: t.code, amount: t.amount, currency: t.currency,
     used_at: used?.used_at || null,
     qr: await qrDataUrl(t.code),

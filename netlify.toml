@@ -15,3 +15,9 @@
   from = "/site-admin"
   to = "/site-admin.html"
   status = 200
+
+# Short link for flyers and QR codes
+[[redirects]]
+  from = "/glory"
+  to = "/glory-blueprint-2027/"
+  status = 301

@@ -23,7 +23,7 @@ export default async (req) => {
       let digits = q.replace(/\D/g, "");
       if (digits.startsWith("0")) digits = digits.slice(1); // 0772... matches 256772...
       const list = (await attendees()).filter((t) =>
-        t.name.toLowerCase().includes(q) || t.email.includes(q) || t.code.toLowerCase().includes(q) ||
+        t.name.toLowerCase().includes(q) || (t.email || "").includes(q) || t.code.toLowerCase().includes(q) ||
         (digits.length >= 4 && t.phone.includes(digits)));
       list.sort((a, b) => a.name.localeCompare(b.name));
       return json({ results: list.slice(0, 25).map((t) => staffView(t, t)) });
