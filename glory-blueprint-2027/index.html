@@ -21,17 +21,17 @@
   .top a.home{font-family:var(--display);font-size:1.15rem;color:var(--pine);text-decoration:none;letter-spacing:.02em}
 
   .btn.big{font-size:1.25rem;padding:1.15em 2.3em;box-shadow:0 12px 28px -12px rgba(15,179,142,.75)}
-  .top-buy{font-size:1rem;padding:.85em 1.5em}
+  .top-buy{font-size:1.2rem;padding:1em 2.1em;box-shadow:0 10px 24px -12px rgba(15,179,142,.75)}
 
   /* ---------- Hero ---------- */
-  .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(24px,5vw,64px);align-items:end;padding:clamp(12px,4vw,40px) 0 clamp(48px,7vw,88px)}
+  .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(24px,5vw,64px);align-items:end;padding:clamp(8px,2.5vh,40px) 0 clamp(48px,7vw,88px)}
   .host{font-size:1rem;color:var(--sage);margin-bottom:1.1rem}
-  .title{font-size:clamp(3.9rem,10.5vw,8.6rem);line-height:.9;letter-spacing:-.01em;
+  .title{font-size:clamp(3.9rem,min(10.5vw,13vh),8.6rem);line-height:.9;letter-spacing:-.01em;
     background:linear-gradient(170deg,var(--aqua) 0%,var(--glory) 38%,var(--pine) 92%);
     -webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.06em}
   .title span{display:block}
   .title .yr{font-size:.62em;letter-spacing:.04em;margin-top:.06em}
-  .lede{font-size:clamp(1.15rem,2vw,1.35rem);line-height:1.45;max-width:30ch;margin:1.6rem 0 2rem}
+  .lede{font-size:clamp(1.15rem,2vw,1.35rem);line-height:1.45;max-width:30ch;margin:clamp(1rem,2.5vh,1.6rem) 0 clamp(1.2rem,3vh,2rem)}
   .facts{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;margin:0 0 2rem;padding:0}
   .facts div{padding:0 clamp(14px,2.4vw,28px);border-left:1.5px solid var(--glory)}
   .facts div:first-child{padding-left:0;border-left:0}
@@ -42,7 +42,7 @@
   .price b{color:var(--pine);font-size:1.15rem}
 
   .portrait{position:relative;justify-self:end;width:min(100%,430px)}
-  .arch{border-radius:999px 999px var(--r-lg) var(--r-lg);overflow:hidden;aspect-ratio:430/620;background:var(--pine);
+  .arch{border-radius:999px 999px var(--r-lg) var(--r-lg);overflow:hidden;aspect-ratio:430/620;max-height:72vh;margin-inline:auto;background:var(--pine);
     box-shadow:0 30px 60px -30px rgba(11,58,44,.55)}
   .arch img{width:100%;height:100%;object-fit:cover;object-position:50% 20%}
   .ppp{display:flex;justify-content:center;gap:0;font-family:var(--display);font-size:clamp(1.05rem,1.8vw,1.3rem);color:var(--glory-deep);margin:0;list-style:none;padding:16px 0 0}
@@ -136,7 +136,7 @@
   }
   @media (max-width:520px){
     .buy-row .btn.big{width:100%}
-    .top-buy{font-size:.95rem;padding:.8em 1.25em}
+    .top-buy{font-size:1rem;padding:.85em 1.3em}
   }
   @media (max-width:420px){
     .facts{grid-template-columns:1fr;gap:10px}
@@ -148,7 +148,7 @@
 
 <header class="wrap top">
   <a class="home" href="/">Bahati Hilda Sabiti</a>
-  <button class="btn top-buy" data-buy>Buy ticket</button>
+  <button class="btn top-buy" data-buy>Buy your ticket</button>
 </header>
 
 <main>
