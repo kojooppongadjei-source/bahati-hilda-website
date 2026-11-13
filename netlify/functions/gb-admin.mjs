@@ -1,9 +1,9 @@
 // POST /api/gb/admin  (header x-pin = ADMIN_PASSWORD)
 //   list | reconcile | resend {code}
 //   issue {name, phone, email?, method, reference, amount?}  -> ticket for a payment made outside the website (MoMo merchant code, cash)
-import { json, fail, kv, isAdmin, issueTicket, sendTicketEmail, attendees, cleanCode, CAPACITY, PRICE, CURRENCY, SITE, newCode, normalizePhone, validEmail } from "../lib/gb.mjs";
+import { json, fail, kv, isAdmin, issueTicket, sendTicketEmail, attendees, cleanCode, CAPACITY, PRICE, CURRENCY, SITE, newCode, normalizePhone, validEmail, safe } from "../lib/gb.mjs";
 
-export default async (req) => {
+const handler = async (req) => {
   if (req.method !== "POST") return fail("Method not allowed", 405);
   if (!(await isAdmin(req))) return fail("Wrong PIN.", 401);
   const body = await req.json().catch(() => ({}));
@@ -79,4 +79,5 @@ export default async (req) => {
 
   return fail("Unknown action.");
 };
+export default safe(handler);
 export const config = { path: "/api/gb/admin" };

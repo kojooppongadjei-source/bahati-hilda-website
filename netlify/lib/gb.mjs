@@ -42,17 +42,39 @@ export const fail = (message, status = 400) => json({ error: message }, status);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // ---------- Storage ----------
-let _store;
-const store = () =>
-  (_store ||= getStore({ name: "gb27-tickets", siteID: env("NETLIFY_SITE_ID"), token: env("NETLIFY_BLOBS_TOKEN") }));
+// Prefer Netlify's built-in Blobs access (automatic inside Netlify Functions, no token to expire);
+// fall back to the site's NETLIFY_SITE_ID + NETLIFY_BLOBS_TOKEN. If one route errors, switch to the other.
+const STORE = "gb27-tickets";
+const routes = [
+  () => getStore({ name: STORE }),
+  () => getStore({ name: STORE, siteID: env("NETLIFY_SITE_ID"), token: env("NETLIFY_BLOBS_TOKEN") }),
+];
+let routeIdx = 0, _store = null;
+export let storageNote = "";
+async function withStore(fn) {
+  let lastErr;
+  for (let tries = 0; tries < routes.length; tries++) {
+    try {
+      _store ||= routes[routeIdx]();
+      return await fn(_store);
+    } catch (e) {
+      lastErr = e;
+      console.error(`Blobs route ${routeIdx} failed:`, e?.name, e?.message);
+      storageNote = `route ${routeIdx}: ${e?.name || "Error"}: ${String(e?.message || e).slice(0, 160)}`;
+      routeIdx = (routeIdx + 1) % routes.length;
+      _store = null;
+    }
+  }
+  throw lastErr;
+}
 
 export const kv = {
-  get: (key) => store().get(key, { type: "json" }),
-  set: (key, val) => store().setJSON(key, val),
+  get: (key) => withStore((s) => s.get(key, { type: "json" })),
+  set: (key, val) => withStore((s) => s.setJSON(key, val)),
   // Atomic create: returns true only for the first writer.
-  create: async (key, val) => (await store().setJSON(key, val, { onlyIfNew: true })).modified,
+  create: async (key, val) => (await withStore((s) => s.setJSON(key, val, { onlyIfNew: true }))).modified,
   async keys(prefix) {
-    const { blobs } = await store().list({ prefix });
+    const { blobs } = await withStore((s) => s.list({ prefix }));
     return blobs.map((b) => b.key);
   },
   async all(prefix) {
@@ -65,6 +87,17 @@ export const kv = {
     return out;
   },
   count: async (prefix) => (await kv.keys(prefix)).length,
+};
+export const storageRoute = () => (routeIdx === 0 ? "built-in" : "token");
+
+// Wrap a handler so a crash returns a clear message (and is logged) instead of a blank error.
+export const safe = (handler) => async (req, ctx) => {
+  try {
+    return await handler(req, ctx);
+  } catch (e) {
+    console.error("GB27 function error:", e?.name, e?.message, e?.stack);
+    return json({ error: "We couldn’t start your payment just now. Please try again in a minute, or WhatsApp +256 757 117 117 and we’ll help you.", code: e?.name || "Error" }, 500);
+  }
 };
 
 // ---------- Validation ----------

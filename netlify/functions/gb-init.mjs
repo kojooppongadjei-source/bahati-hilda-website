@@ -1,7 +1,7 @@
 // POST /api/gb/init  { name, phone, email } -> starts a checkout
-import { json, fail, kv, PRICE, CURRENCY, SITE, EVENT, FLW_PUBLIC, newTxRef, normalizePhone, validEmail , CAPACITY } from "../lib/gb.mjs";
+import { json, fail, kv, PRICE, CURRENCY, SITE, EVENT, FLW_PUBLIC, newTxRef, normalizePhone, validEmail , CAPACITY, safe } from "../lib/gb.mjs";
 
-export default async (req) => {
+const handler = async (req) => {
   if (req.method !== "POST") return fail("Method not allowed", 405);
   const body = await req.json().catch(() => ({}));
   const name = String(body.name || "").trim().replace(/\s+/g, " ").slice(0, 80);
@@ -28,4 +28,5 @@ export default async (req) => {
     title: EVENT.name,
   });
 };
+export default safe(handler);
 export const config = { path: "/api/gb/init" };

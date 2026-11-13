@@ -1,8 +1,8 @@
 // POST /api/gb/checkin  (header x-pin)
 //   login | scan {code} | checkin {code} | search {q} | stats
-import { json, fail, kv, cleanCode, staffFromRequest, checkIn, attendees, staffView } from "../lib/gb.mjs";
+import { json, fail, kv, cleanCode, staffFromRequest, checkIn, attendees, staffView, safe } from "../lib/gb.mjs";
 
-export default async (req) => {
+const handler = async (req) => {
   if (req.method !== "POST") return fail("Method not allowed", 405);
   const staff = await staffFromRequest(req);
   if (!staff) return fail("Wrong PIN.", 401);
@@ -36,4 +36,5 @@ export default async (req) => {
       return fail("Unknown action.");
   }
 };
+export default safe(handler);
 export const config = { path: "/api/gb/checkin" };

@@ -1,7 +1,7 @@
 // POST /api/gb/webhook  Flutterwave webhook (optional safety net). Ignores non-ticket payments.
-import { json, issueTicket, validTxRef } from "../lib/gb.mjs";
+import { json, issueTicket, validTxRef, safe } from "../lib/gb.mjs";
 
-export default async (req) => {
+const handler = async (req) => {
   const hash = process.env.FLW_SECRET_HASH;
   if (!hash || req.headers.get("verif-hash") !== hash) return json({ ok: false }, 401);
   const body = await req.json().catch(() => ({}));
@@ -14,4 +14,5 @@ export default async (req) => {
     return json({ ok: false }, 500); // Flutterwave retries
   }
 };
+export default safe(handler);
 export const config = { path: "/api/gb/webhook" };
