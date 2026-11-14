@@ -27,7 +27,7 @@ const PRODUCTS = [
   {
     id: 'ebook-we-did-not-wait-to-wait-again',
     name: 'We Did Not Wait to Wait Again (Digital Edition)',
-    price: 35000,
+    price: 50000,
     image: '/assets/images/book-we-did-not-wait-to-wait-again.jpg',
     description: 'Instant PDF download, read on any device, right after payment.',
     digital: true,
