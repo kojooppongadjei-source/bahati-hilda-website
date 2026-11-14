@@ -21,3 +21,9 @@
   from = "/glory"
   to = "/glory-blueprint-2027/"
   status = 301
+
+# Short link for promoting the new book
+[[redirects]]
+  from = "/waitagain"
+  to = "/shop.html#we-did-not-wait"
+  status = 301
