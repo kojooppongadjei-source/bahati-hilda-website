@@ -5,7 +5,7 @@
 const PRODUCTS = [
   {
     id: 'book-we-did-not-wait-to-wait-again',
-    name: 'We Did Not Wait to Wait Again',
+    name: 'We Did Not Wait to Wait Again (Pre-order, ships from 28 Nov)',
     price: 50000,
     image: '/assets/images/book-we-did-not-wait-to-wait-again.jpg',
     description: 'For anyone tired of almost-there testimonies: 12 chapters to break the cycles that keep you stuck.'
