@@ -4,6 +4,13 @@
 // succeeds, the file download starts automatically for that item.
 const PRODUCTS = [
   {
+    id: 'book-we-did-not-wait-to-wait-again',
+    name: 'We Did Not Wait to Wait Again',
+    price: 50000,
+    image: '/assets/images/book-we-did-not-wait-to-wait-again.jpg',
+    description: 'For anyone tired of almost-there testimonies: 12 chapters to break the cycles that keep you stuck.'
+  },
+  {
     id: 'book-deliberately-selfish',
     name: 'Deliberately Selfish',
     price: 45000,
