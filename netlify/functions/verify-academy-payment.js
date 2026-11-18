@@ -20,7 +20,10 @@ exports.handler = async function (event) {
     return { statusCode: 400, body: JSON.stringify({ error: "Invalid JSON" }) };
   }
 
-  const { transaction_id, expected_amount, expected_currency, tx_ref, plan, student } = body;
+  const { transaction_id, tx_ref, student } = body;
+  const plan = "full";
+
+  try { connectLambda(event); } catch (e) { /* older runtime: token fallback below */ }
 
   if (!transaction_id) {
     return {
@@ -40,7 +43,7 @@ exports.handler = async function (event) {
 
   try {
     const res = await fetch(
-      `https://api.flutterwave.com/v3/transactions/${transaction_id}/verify`,
+      `https://api.flutterwave.com/v3/transactions/${encodeURIComponent(transaction_id)}/verify`,
       {
         method: "GET",
         headers: {
@@ -54,17 +57,19 @@ exports.handler = async function (event) {
     if (data.status !== "success" || !data.data) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ verified: false, reason: "Verification call failed", data }),
+        body: JSON.stringify({ verified: false, reason: "Verification call failed" }),
       };
     }
 
     const tx = data.data;
 
-    const amountOk =
-      typeof expected_amount !== "number" || tx.amount >= expected_amount;
-    const currencyOk = !expected_currency || tx.currency === expected_currency;
+    // The price is decided here, never by the browser.
+    const price = requiredPrice(tx.created_at);
+    const amountOk = price.accepts(tx.currency, Number(tx.amount));
+    const currencyOk = true; // checked inside price.accepts
     const refOk = !tx_ref || tx.tx_ref === tx_ref;
     const statusOk = tx.status === "successful";
+    if (!amountOk) console.error("Academy payment below required price", { tx_ref: tx.tx_ref, amount: tx.amount, currency: tx.currency });
 
     const verified = amountOk && currencyOk && refOk && statusOk;
 
@@ -93,17 +98,37 @@ exports.handler = async function (event) {
   }
 };
 
-function getBlobStore() {
-  const { getStore } = require("@netlify/blobs");
-  // Zero-config getStore() relies on Netlify auto-injecting connection
-  // details into the function runtime, which isn't happening reliably
-  // for this project — so we configure it explicitly instead using a
-  // Personal Access Token (kept as a secret env var) and the site ID.
-  return getStore({
-    name: "academy-registrations",
-    siteID: process.env.NETLIFY_SITE_ID,
-    token: process.env.NETLIFY_BLOBS_TOKEN,
-  });
+// ---- Price schedule: Package Yourself Like an Expert, December 2026 intake ----
+// UGX 3,000,000 until 31 December 2026 (Kampala time). From 1 January 2027
+// the investment is USD 1,000 (or the UGX amount in ACADEMY_JAN_PRICE_UGX,
+// if the team sets one in Netlify).
+const PRICE_CHANGE_AT = Date.parse("2027-01-01T00:00:00+03:00");
+function requiredPrice(createdAt) {
+  const at = Date.parse(createdAt) || Date.now();
+  if (at < PRICE_CHANGE_AT) {
+    return { label: "UGX 3,000,000", accepts: (cur, amt) => cur === "UGX" && amt >= 3000000 };
+  }
+  const janUgx = parseInt(process.env.ACADEMY_JAN_PRICE_UGX || "0", 10);
+  return {
+    label: "USD 1,000",
+    accepts: (cur, amt) => (cur === "USD" && amt >= 1000) || (janUgx > 0 && cur === "UGX" && amt >= janUgx),
+  };
+}
+
+const { getStore, connectLambda } = require("@netlify/blobs");
+
+// Netlify's built-in Blobs access first (no token to expire), then the
+// site's NETLIFY_SITE_ID + NETLIFY_BLOBS_TOKEN as a fallback.
+async function withBlobStore(fn) {
+  const routes = [
+    () => getStore({ name: "academy-registrations" }),
+    () => getStore({ name: "academy-registrations", siteID: process.env.NETLIFY_SITE_ID, token: process.env.NETLIFY_BLOBS_TOKEN }),
+  ];
+  let lastErr;
+  for (const make of routes) {
+    try { return await fn(make()); } catch (e) { lastErr = e; console.error("Blobs route failed:", e && e.message); }
+  }
+  throw lastErr;
 }
 
 // Persists each verified registration to Netlify Blobs, so Hilda's team
@@ -113,7 +138,6 @@ function getBlobStore() {
 // gets its own record.
 async function saveRegistration({ tx, student, tx_ref, plan }) {
   try {
-    const store = getBlobStore();
     const record = {
       tx_ref,
       name: student && student.name,
@@ -121,16 +145,17 @@ async function saveRegistration({ tx, student, tx_ref, plan }) {
       phone: student && student.phone,
       source: (student && student.source) || "Not specified",
       plan,
-      plan_label: plan === "installment" ? "Two-Part Payment Plan (1st instalment)" : "Full Payment",
+      plan_label: "Full Payment",
+      program: "Package Yourself Like an Expert — December 2026 intake (12 weeks, online)",
       amount: tx.amount,
       currency: tx.currency,
       status: tx.status,
-      balance_owed: plan === "installment" ? 1250000 : 0,
-      balance_due_date: plan === "installment" ? "2026-10-29" : null,
+      balance_owed: 0,
+      balance_due_date: null,
       flw_transaction_id: tx.id,
       registered_at: new Date().toISOString(),
     };
-    await store.setJSON(tx_ref, record);
+    await withBlobStore((store) => store.setJSON(tx_ref, record));
   } catch (err) {
     // Never block the student's confirmation over a storage hiccup —
     // the email notification is still sent as a fallback record.
@@ -161,21 +186,19 @@ async function sendStudentConfirmationEmail({ tx, student, tx_ref, plan }) {
     return;
   }
 
-  const isInstallment = plan === "installment";
-  const paidLabel = isInstallment ? "1st of 2 instalments (UGX 1,250,000)" : "Full payment (UGX 2,500,000)";
+  const paidLabel = `Full payment (${tx.currency} ${Number(tx.amount).toLocaleString("en-US")})`;
 
   const html = `
     <h2>You're Registered — Package Yourself Like an Expert: The 7 Power Systems</h2>
     <p>Hi ${escapeHtml(student.name)},</p>
-    <p>Thank you for registering for <strong>Package Yourself Like an Expert: The 7 Power Systems</strong>, the flagship 8-week program of the Accelerated Mentorship Academy. Your seat in the <strong>1st October</strong> cohort is confirmed.</p>
+    <p>Thank you for registering for <strong>Package Yourself Like an Expert</strong>, the 12-week online program of the Accelerated Mentorship Academy. Your place in the intake starting <strong>14 December 2026</strong> is confirmed.</p>
     <p><strong>Payment received:</strong> ${escapeHtml(paidLabel)}<br>
     <strong>Reference:</strong> ${escapeHtml(tx_ref)}<br>
     <strong>Transaction ID:</strong> ${tx.id}</p>
-    ${isInstallment ? `<p><strong>Your 2nd instalment</strong> of UGX 1,250,000 is due by <strong>29th October</strong>. We'll send a reminder with a payment link closer to the date.</p>` : ""}
     <h3>What happens next</h3>
     <ul>
       <li>You'll receive a separate onboarding email from our team within 24 hours with your class schedule, learning materials and access details.</li>
-      <li>The program runs for 8 weeks starting <strong>1st October</strong>.</li>
+      <li>The program is fully online and runs for 12 weeks, starting <strong>14 December 2026</strong>.</li>
       <li>If you have any questions in the meantime, WhatsApp us at <a href="https://wa.me/256757117117">+256 757 117 117</a> or reply to this email.</li>
     </ul>
     <p>We're excited to have you in the room.</p>
@@ -187,7 +210,7 @@ async function sendStudentConfirmationEmail({ tx, student, tx_ref, plan }) {
     await transporter.sendMail({
       from: '"Accelerated Mentorship Academy" <info@bahatihildasabiti.com>',
       to: student.email,
-      subject: "You're Registered: Package Yourself Like an Expert (7 Power Systems)",
+      subject: "You're Registered: Package Yourself Like an Expert (starts 14 December)",
       html,
     });
   } catch (err) {
@@ -206,16 +229,11 @@ async function sendTeamNotificationEmail({ tx, student, tx_ref, plan }) {
     return;
   }
 
-  const isInstallment = plan === "installment";
-  const planLabel = isInstallment
-    ? "Two-Part Payment Plan (1st of 2 instalments paid)"
-    : "Full Payment";
-  const balanceNote = isInstallment
-    ? `<p style="color:#9C6169;"><strong>Balance owed:</strong> UGX 1,250,000, due by 29th October.</p>`
-    : `<p><strong>Balance owed:</strong> None — paid in full.</p>`;
+  const planLabel = "Full Payment";
+  const balanceNote = `<p><strong>Balance owed:</strong> None — paid in full.</p>`;
 
   const html = `
-    <h2>New Academy Registration — 7 Power Systems</h2>
+    <h2>New Academy Registration — Package Yourself Like an Expert (December 2026 intake)</h2>
     <table border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse;">
       <tr><td><strong>Name</strong></td><td>${escapeHtml(student && student.name)}</td></tr>
       <tr><td><strong>Email</strong></td><td>${escapeHtml(student && student.email)}</td></tr>

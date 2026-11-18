@@ -25,21 +25,25 @@ exports.handler = async function (event) {
     };
   }
 
-  try {
-    const { getStore } = require("@netlify/blobs");
-    const store = getStore({
-      name: "academy-registrations",
-      siteID: process.env.NETLIFY_SITE_ID,
-      token: process.env.NETLIFY_BLOBS_TOKEN,
-    });
-    const { blobs } = await store.list();
+  const { getStore, connectLambda } = require("@netlify/blobs");
+  try { connectLambda(event); } catch (e) { /* token fallback below */ }
 
-    const records = await Promise.all(
-      blobs.map(async (b) => {
-        const record = await store.get(b.key, { type: "json" });
-        return record;
-      })
-    );
+  // Built-in Blobs access first, then the site token as a fallback.
+  async function readAll(store) {
+    const { blobs } = await store.list();
+    return Promise.all(blobs.map((b) => store.get(b.key, { type: "json" })));
+  }
+
+  try {
+    let records, lastErr;
+    for (const make of [
+      () => getStore({ name: "academy-registrations" }),
+      () => getStore({ name: "academy-registrations", siteID: process.env.NETLIFY_SITE_ID, token: process.env.NETLIFY_BLOBS_TOKEN }),
+    ]) {
+      try { records = await readAll(make()); break; } catch (e) { lastErr = e; console.error("Blobs route failed:", e && e.message); }
+    }
+    if (!records) throw lastErr;
+    records = records.filter(Boolean);
 
     // Most recent first.
     records.sort((a, b) => new Date(b.registered_at) - new Date(a.registered_at));
