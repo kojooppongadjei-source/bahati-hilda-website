@@ -43,6 +43,9 @@
       el.textContent = 'The program started on 14 December 2026. WhatsApp us to ask about joining.';
     });
 
+    // 2b. The two-instalment option was an early-price offer
+    document.querySelectorAll('.plan-grid, .ama-split').forEach(function (el) { el.style.display = 'none'; });
+
     // 3. Registration page: online payment -> WhatsApp
     var btn = document.getElementById('reg-pay-btn');
     if (btn) {

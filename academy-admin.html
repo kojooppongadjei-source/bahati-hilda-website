@@ -135,10 +135,12 @@ function renderRegistrations(records){
   tableEl.style.display = 'table';
   emptyEl.style.display = 'none';
 
-  const totalRegistrations = records.length;
-  const totalCollected = records.reduce((sum, r) => sum + (r.amount || 0), 0);
+  // 2nd-instalment payments are listed too, but they aren't new students.
+  const students = records.filter(r => r.plan !== 'balance');
+  const totalRegistrations = students.length;
+  const totalCollected = records.reduce((sum, r) => sum + (r.currency === 'UGX' || !r.currency ? (r.amount || 0) : 0), 0);
   const totalOwed = records.reduce((sum, r) => sum + (r.balance_owed || 0), 0);
-  const fullPayCount = records.filter(r => r.plan === 'full').length;
+  const fullPayCount = students.filter(r => r.plan === 'full' || (r.plan === 'installment' && !r.balance_owed)).length;
 
   statsEl.innerHTML = `
     <div class="admin-stat"><div class="num">${totalRegistrations}</div><div class="label">Registrations</div></div>
@@ -151,8 +153,13 @@ function renderRegistrations(records){
     const date = r.registered_at ? new Date(r.registered_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
     const planBadge = r.plan === 'full'
       ? '<span class="badge badge-full">Full Payment</span>'
-      : '<span class="badge badge-installment">Instalment 1 of 2</span>';
-    const balance = r.balance_owed ? `UGX ${Number(r.balance_owed).toLocaleString('en-UG')}` : '—';
+      : r.plan === 'balance'
+        ? '<span class="badge badge-full">Instalment 2 of 2</span>'
+        : (r.balance_owed
+            ? '<span class="badge badge-installment">Instalment 1 of 2</span>'
+            : '<span class="badge badge-full">Instalments: paid in full</span>');
+    const due = r.balance_due_date ? ` <small style="color:#9C6169;">due ${new Date(r.balance_due_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</small>` : '';
+    const balance = r.balance_owed ? `UGX ${Number(r.balance_owed).toLocaleString('en-UG')}${due}` : (r.note ? `<small style="color:#9C6169;">${escapeHtml(r.note)}</small>` : '—');
     const statusLabel = r.status === 'successful' ? '✅ Paid' : (r.status || '—');
 
     return `

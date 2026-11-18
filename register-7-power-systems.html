@@ -135,7 +135,7 @@
         <div class="reg-fact"><span>Starts</span><strong>14 December 2026</strong></div>
         <div class="reg-fact"><span>Format</span><strong>Fully online</strong></div>
         <div class="reg-fact"><span>Duration</span><strong>12 weeks</strong></div>
-        <div class="reg-fact"><span>Investment</span><strong class="ama-price">UGX 3,000,000</strong></div>
+        <div class="reg-fact"><span>Investment</span><strong class="ama-price">UGX 3,000,000</strong><small class="ama-split" style="display:block;color:rgba(255,255,255,.75);font-size:13px;margin-top:2px;">or 2 &times; UGX 1,500,000</small></div>
       </div>
       <a href="#enrol" class="btn btn-gold" style="margin-top:30px;">Register Now</a>
     </div>
@@ -223,17 +223,37 @@
 
   <div id="enrol"></div>
   <h2 class="reg-section-title">Your investment</h2>
-  <p class="reg-section-sub">One payment secures your place in the December intake.</p>
-  <div class="price-card">
-    <div class="tag">Package Yourself Like an Expert &middot; 12 weeks, fully online</div>
-    <div class="price ama-price-big">UGX 3,000,000 <small>approx. USD 722</small></div>
-    <div class="early ama-early">This price is available until 31 December 2026. From 1 January 2027 the investment is USD 1,000.</div>
-    <ul>
-      <li>All 7 Power Systems plus every bonus listed above</li>
-      <li>Starts 14 December 2026, fully online</li>
-      <li>Pay with MTN Mobile Money, Airtel Money or card</li>
-    </ul>
+  <p class="reg-section-sub">Pay in full or split it into two payments. Both secure your place in the December intake. Choose one to continue.</p>
+  <div class="plan-grid">
+    <label class="plan-card selected" id="plan-full-card">
+      <input type="radio" name="plan" value="full" id="plan-full" checked>
+      <div class="tag">Full Payment</div>
+      <h3>Pay in Full</h3>
+      <div class="price">UGX 3,000,000</div>
+      <div class="deadline">approx. USD 722, paid once</div>
+      <ul>
+        <li>One payment, nothing else to track</li>
+        <li>Your place confirmed immediately</li>
+      </ul>
+    </label>
+    <label class="plan-card" id="plan-installment-card">
+      <input type="radio" name="plan" value="installment" id="plan-installment">
+      <div class="tag">Two-Part Payment Plan</div>
+      <h3>Pay in 2 Instalments</h3>
+      <div class="price">UGX 1,500,000 <small>&times; 2</small></div>
+      <div class="deadline">1st instalment today<br>2nd instalment by <strong>11 January 2027</strong></div>
+      <ul>
+        <li>Today's payment secures your place</li>
+        <li>We'll email you a link to pay the 2nd half</li>
+      </ul>
+    </label>
   </div>
+  <p class="early ama-early" style="font-size:14px;color:var(--wine-deep);font-weight:700;margin:-24px 0 18px;">These prices are available until 31 December 2026. From 1 January 2027 the investment is USD 1,000.</p>
+  <ul style="font-size:14px;color:var(--ink-soft);line-height:1.7;padding-left:18px;margin:0 0 40px;">
+    <li>All 7 Power Systems plus every bonus listed above</li>
+    <li>Starts 14 December 2026, fully online</li>
+    <li>Pay with MTN Mobile Money, Airtel Money or card</li>
+  </ul>
 
   <p class="reg-prose" style="margin-bottom:34px;">You don’t have to keep sitting on your ideas, waiting to feel completely ready or hoping people will somehow discover your value. <strong style="color:var(--ink);">Package your expertise. Build your influence. Create new possibilities for income.</strong></p>
 

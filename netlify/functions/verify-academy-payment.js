@@ -21,7 +21,7 @@ exports.handler = async function (event) {
   }
 
   const { transaction_id, tx_ref, student } = body;
-  const plan = "full";
+  const requestedPlan = ["full", "installment", "balance"].includes(body.plan) ? body.plan : "full";
 
   try { connectLambda(event); } catch (e) { /* older runtime: token fallback below */ }
 
@@ -63,9 +63,10 @@ exports.handler = async function (event) {
 
     const tx = data.data;
 
-    // The price is decided here, never by the browser.
-    const price = requiredPrice(tx.created_at);
-    const amountOk = price.accepts(tx.currency, Number(tx.amount));
+    // The price is decided here, never by the browser: the amount actually
+    // paid decides which plan this payment counts as.
+    const plan = classifyPlan(requestedPlan, tx);
+    const amountOk = plan !== null;
     const currencyOk = true; // checked inside price.accepts
     const refOk = !tx_ref || tx.tx_ref === tx_ref;
     const statusOk = tx.status === "successful";
@@ -115,6 +116,29 @@ function requiredPrice(createdAt) {
   };
 }
 
+// Two-part plan (early price only): 2 x UGX 1,500,000, 2nd by 11 January 2027.
+const INSTALMENT_UGX = 1500000;
+const BALANCE_DUE = "2027-01-11";
+const BALANCE_DUE_LABEL = "11 January 2027";
+const BALANCE_URL = "https://bahatihildasabiti.com/academy-balance";
+
+// Returns "full" | "installment" | "balance", or null if the amount paid
+// doesn't cover what was asked for.
+function classifyPlan(requested, tx) {
+  const amt = Number(tx.amount), cur = tx.currency;
+  const early = (Date.parse(tx.created_at) || Date.now()) < PRICE_CHANGE_AT;
+  if (requested === "balance") return cur === "UGX" && amt >= INSTALMENT_UGX ? "balance" : null;
+  if (requiredPrice(tx.created_at).accepts(cur, amt)) return "full";
+  if (requested === "installment" && early && cur === "UGX" && amt >= INSTALMENT_UGX) return "installment";
+  return null;
+}
+
+const PLAN_LABELS = {
+  full: "Full Payment",
+  installment: "Two-Part Plan: Instalment 1 of 2",
+  balance: "Two-Part Plan: Instalment 2 of 2",
+};
+
 const { getStore, connectLambda } = require("@netlify/blobs");
 
 // Netlify's built-in Blobs access first (no token to expire), then the
@@ -145,22 +169,59 @@ async function saveRegistration({ tx, student, tx_ref, plan }) {
       phone: student && student.phone,
       source: (student && student.source) || "Not specified",
       plan,
-      plan_label: "Full Payment",
+      plan_label: PLAN_LABELS[plan],
       program: "Package Yourself Like an Expert — December 2026 intake (12 weeks, online)",
       amount: tx.amount,
       currency: tx.currency,
       status: tx.status,
-      balance_owed: 0,
-      balance_due_date: null,
+      balance_owed: plan === "installment" ? INSTALMENT_UGX : 0,
+      balance_due_date: plan === "installment" ? BALANCE_DUE : null,
       flw_transaction_id: tx.id,
       registered_at: new Date().toISOString(),
     };
-    await withBlobStore((store) => store.setJSON(tx_ref, record));
+
+    await withBlobStore(async (store) => {
+      if (plan === "balance") {
+        // Clear the balance on this student's 1st-instalment record.
+        const first = await findOpenInstalment(store, student, (student && student.reference) || "");
+        if (first) {
+          await store.setJSON(first.tx_ref, {
+            ...first,
+            balance_owed: 0,
+            balance_paid_at: record.registered_at,
+            balance_tx_ref: tx_ref,
+          });
+          record.first_instalment_tx_ref = first.tx_ref;
+        } else {
+          record.note = "No matching 1st-instalment record found: check by name/phone.";
+        }
+      }
+      // Re-verifying the same payment must not create a second record.
+      const existing = await store.get(tx_ref, { type: "json" });
+      if (!existing) await store.setJSON(tx_ref, record);
+    });
   } catch (err) {
     // Never block the student's confirmation over a storage hiccup —
     // the email notification is still sent as a fallback record.
     console.error("Failed to save registration to Blobs:", err);
   }
+}
+
+const digits = (p) => String(p || "").replace(/\D/g, "").replace(/^(256|0)/, "");
+
+async function findOpenInstalment(store, student, reference) {
+  const { blobs } = await store.list();
+  const records = (await Promise.all(blobs.map((b) => store.get(b.key, { type: "json" })))).filter(Boolean);
+  const open = records.filter((r) => r.plan === "installment" && r.balance_owed > 0);
+  const ref = String(reference).trim().toUpperCase();
+  const email = String((student && student.email) || "").trim().toLowerCase();
+  const phone = digits(student && student.phone);
+  return (
+    (ref && open.find((r) => String(r.tx_ref).toUpperCase() === ref)) ||
+    (email && open.find((r) => String(r.email || "").trim().toLowerCase() === email)) ||
+    (phone.length >= 7 && open.find((r) => digits(r.phone) === phone)) ||
+    null
+  );
 }
 
 function getTransporter() {
@@ -186,22 +247,31 @@ async function sendStudentConfirmationEmail({ tx, student, tx_ref, plan }) {
     return;
   }
 
-  const paidLabel = `Full payment (${tx.currency} ${Number(tx.amount).toLocaleString("en-US")})`;
+  const paid = `${tx.currency} ${Number(tx.amount).toLocaleString("en-US")}`;
+  const isBalance = plan === "balance";
+  const intro = isBalance
+    ? `<p>Thank you. Your <strong>2nd and final instalment</strong> for <strong>Package Yourself Like an Expert</strong> has been received. Your program fee is now paid in full.</p>`
+    : `<p>Thank you for registering for <strong>Package Yourself Like an Expert</strong>, the 12-week online program of the Accelerated Mentorship Academy. Your place in the intake starting <strong>14 December 2026</strong> is confirmed.</p>`;
+  const balanceBlock = plan === "installment"
+    ? `<p style="background:#FBF3F1;padding:14px 16px;border-radius:8px;"><strong>Your 2nd instalment of UGX 1,500,000 is due by ${BALANCE_DUE_LABEL}.</strong><br>
+       Pay it any time here: <a href="${BALANCE_URL}?ref=${encodeURIComponent(tx_ref)}">${BALANCE_URL}</a></p>`
+    : "";
 
   const html = `
-    <h2>You're Registered — Package Yourself Like an Expert: The 7 Power Systems</h2>
+    <h2>${isBalance ? "Payment Received" : "You're Registered"} — Package Yourself Like an Expert</h2>
     <p>Hi ${escapeHtml(student.name)},</p>
-    <p>Thank you for registering for <strong>Package Yourself Like an Expert</strong>, the 12-week online program of the Accelerated Mentorship Academy. Your place in the intake starting <strong>14 December 2026</strong> is confirmed.</p>
-    <p><strong>Payment received:</strong> ${escapeHtml(paidLabel)}<br>
+    ${intro}
+    <p><strong>Payment received:</strong> ${escapeHtml(PLAN_LABELS[plan])} (${escapeHtml(paid)})<br>
     <strong>Reference:</strong> ${escapeHtml(tx_ref)}<br>
     <strong>Transaction ID:</strong> ${tx.id}</p>
-    <h3>What happens next</h3>
+    ${balanceBlock}
+    ${isBalance ? "" : `<h3>What happens next</h3>
     <ul>
       <li>You'll receive a separate onboarding email from our team within 24 hours with your class schedule, learning materials and access details.</li>
       <li>The program is fully online and runs for 12 weeks, starting <strong>14 December 2026</strong>.</li>
       <li>If you have any questions in the meantime, WhatsApp us at <a href="https://wa.me/256757117117">+256 757 117 117</a> or reply to this email.</li>
     </ul>
-    <p>We're excited to have you in the room.</p>
+    <p>We're excited to have you in the room.</p>`}
     <p>— The Accelerated Mentorship Academy Team</p>
   `;
 
@@ -210,7 +280,9 @@ async function sendStudentConfirmationEmail({ tx, student, tx_ref, plan }) {
     await transporter.sendMail({
       from: '"Accelerated Mentorship Academy" <info@bahatihildasabiti.com>',
       to: student.email,
-      subject: "You're Registered: Package Yourself Like an Expert (starts 14 December)",
+      subject: isBalance
+        ? "Payment received: your 2nd instalment, Package Yourself Like an Expert"
+        : "You're Registered: Package Yourself Like an Expert (starts 14 December)",
       html,
     });
   } catch (err) {
@@ -229,8 +301,12 @@ async function sendTeamNotificationEmail({ tx, student, tx_ref, plan }) {
     return;
   }
 
-  const planLabel = "Full Payment";
-  const balanceNote = `<p><strong>Balance owed:</strong> None — paid in full.</p>`;
+  const planLabel = PLAN_LABELS[plan];
+  const balanceNote = plan === "installment"
+    ? `<p style="color:#9C6169;"><strong>Balance owed:</strong> UGX 1,500,000, due by ${BALANCE_DUE_LABEL}.</p>`
+    : plan === "balance"
+      ? `<p><strong>2nd instalment received.</strong> This student has now paid in full.${student && student.reference ? ` 1st payment reference given: ${escapeHtml(student.reference)}` : ""}</p>`
+      : `<p><strong>Balance owed:</strong> None — paid in full.</p>`;
 
   const html = `
     <h2>New Academy Registration — Package Yourself Like an Expert (December 2026 intake)</h2>
